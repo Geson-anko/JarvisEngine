@@ -37,6 +37,21 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "logging-server"
+version = "0.1.0"
+description = "The logging tool for python multiprocessing."
+category = "main"
+optional = false
+python-versions = "^3.9"
+develop = false
+
+[package.source]
+type = "git"
+url = "https://github.com/Geson-anko/logging_server"
+reference = "main"
+resolved_reference = "1a980addbefb23489699051213910a3eef3e1557"
+
+[[package]]
 name = "packaging"
 version = "21.3"
 description = "Core utilities for Python packages"
@@ -110,7 +125,7 @@ python-versions = ">=3.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "bedc0e6b8c8b7a202bcf46ae377950c8f413dbdd55f6d786f82b7dcf89cd8a6f"
+content-hash = "afee1d8c32176719c1a5a6205aa9e6fe79475e1151522bd0a7f921495a2decb6"
 
 [metadata.files]
 atomicwrites = [
@@ -129,6 +144,7 @@ iniconfig = [
     {file = "iniconfig-1.1.1-py2.py3-none-any.whl", hash = "sha256:011e24c64b7f47f6ebd835bb12a743f2fbe9a26d4cecaa7f53bc4f35ee9da8b3"},
     {file = "iniconfig-1.1.1.tar.gz", hash = "sha256:bc3af051d7d14b2ee5ef9969666def0cd1a000e121eaea580d4a313df4b37f32"},
 ]
+logging-server = []
 packaging = [
     {file = "packaging-21.3-py3-none-any.whl", hash = "sha256:ef103e05f519cdc783ae24ea4e2e0f508a9c99b2d4969652eed6a2e1ea5bd522"},
     {file = "packaging-21.3.tar.gz", hash = "sha256:dd47c42927d89ab911e606518907cc2d3a1f38bbd026385970643f9c5b8ecfeb"},
