@@ -8,6 +8,7 @@ authors = ["Geson-anko <59220704+Geson-anko@users.noreply.github.com>"]
 python = "^3.9"
 pytest = "^7.0.0"
 logging-server = {git = "https://github.com/Geson-anko/logging_server", rev = "main"}
+Attr-Dict = "^1.0.0"
 
 [tool.poetry.dev-dependencies]
 
