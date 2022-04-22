@@ -10,6 +10,7 @@ pytest = "^7.0.0"
 logging-server = {git = "https://github.com/Geson-anko/logging_server", rev = "main"}
 Attr-Dict = "^1.0.0"
 folder-dict = "^0.1.2"
+json5 = "^0.9.6"
 
 [tool.poetry.dev-dependencies]
 
