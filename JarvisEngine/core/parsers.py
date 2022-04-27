@@ -23,3 +23,22 @@ def at_launching() -> ArgumentParser:
 
     return parser
 
+def at_creating() -> ArgumentParser:
+    """
+    The parser used at creating JarvisEngine project.
+    This returns an Argument Parser inherited 
+    `at_launching` and with the following options.
+        - `-n`, `--name`
+            The name of your JarvisEngine project.
+        - `-d`, `--creating_dir`
+            The directory in which the project will be generated.
+            If not provided, the project will be generated into the `os.getcwd()`.
+    """
+    parser = at_launching()
+    parser.add_argument("-n","--name",type=str,required=True,
+                        help="The name of your project.")
+    parser.add_argument("-d","--creating_dir", type=str, default="./",
+                        help="The directory in which the project will be generated.")
+
+    return parser
+

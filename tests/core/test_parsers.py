@@ -46,3 +46,22 @@ def test_at_launching():
         raise AssertionError("Invalid option of `--log_level` is recognized!")
     except SystemExit: pass
 
+def test_at_creating():
+    parser = parsers.at_creating()
+    
+    argv = "create -n aaa -d=bbb"
+    args = _parse_args(parser, argv.split())
+    assert args.name == "aaa"
+    assert args.creating_dir == "bbb"
+
+    argv = "create --name=ccc --creating_dir ddd"
+    args = _parse_args(parser, argv.split())
+    assert args.name == "ccc"
+    assert args.creating_dir == "ddd"
+
+    # `--name` is required.
+    argv = "create -d eee"
+    try:
+        _parse_args(parser, argv.split())
+        raise AssertionError("--name or -n is required, but not provided!")
+    except SystemExit: pass
