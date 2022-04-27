@@ -65,3 +65,22 @@ def test_at_creating():
         _parse_args(parser, argv.split())
         raise AssertionError("--name or -n is required, but not provided!")
     except SystemExit: pass
+
+
+def test_at_running():
+    parser = parsers.at_running()
+
+    # check default value
+    argv = "run"
+    args = _parse_args(parser, argv.split())
+    assert args.project_dir == "./"
+    
+    argv = "run -d=aaa"
+    args = _parse_args(parser, argv.split())
+    assert args.project_dir == "aaa"
+
+    argv = "run --project_dir bbb"
+    args = _parse_args(parser, argv.split())
+    assert args.project_dir == "bbb"
+    
+
