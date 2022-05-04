@@ -1,0 +1,5 @@
+[logging]
+host = "127.0.0.1"
+port = 8316
+message_format = "%(asctime)s.%(msecs)03d %(name)s [%(levelname)s]: %(message)s"
+date_format = "%Y/%m/%d %H:%M:%S"
