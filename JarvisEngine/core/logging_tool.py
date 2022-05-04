@@ -11,3 +11,6 @@ This module provides useful tools for logging.
     SocketLogger will no longer be used in the future.
 """
 from logging_server import LoggingServer, SocketLogger as Logger
+import logging
+
+MAIN_LOGGER_NAME = "MAIN"
