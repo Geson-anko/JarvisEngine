@@ -14,3 +14,12 @@ def clean(name:str) -> str:
 
     return name[start:end]
     
+def join(name:str, *others:str) -> str:
+    """join names
+    Ex: join("a.b.","c.d") -> "a.b.c.d"
+    """
+    name = clean(name)
+    for n in others:
+        n = clean(n)
+        name = f"{name}{SEP}{n}"
+    return name
