@@ -1,6 +1,9 @@
 from argparse import ArgumentParser
 import logging
 
+CREATE = "create"
+RUN = "run"
+
 def at_launching() -> ArgumentParser:
     """
     The parser used at lauching JarvisEngine.
@@ -15,7 +18,7 @@ def at_launching() -> ArgumentParser:
             The level names follow the standard python library logging.
     """
     parser = ArgumentParser()
-    parser.add_argument("command",type=str,choices=["create", "run"],
+    parser.add_argument("command",type=str,choices=[CREATE, RUN],
                         help="Running mode of JarvisEngine")
     parser.add_argument("-ll","--log_level", type=str, default="DEBUG",
                         choices=["DEBUG","INFO","WARNING","ERROR","CRITICAL"],
