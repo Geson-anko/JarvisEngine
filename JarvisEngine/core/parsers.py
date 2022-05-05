@@ -1,5 +1,6 @@
 from argparse import ArgumentParser
 import logging
+from ..constants import DEFAULT_CONFIG_FILE_NAME,DEFAULT_ENGINE_CONFIG_FILE
 
 CREATE = "create"
 RUN = "run"
@@ -53,10 +54,15 @@ def at_running() -> ArgumentParser:
     `at_launching` and with the following options.
         - `-d`, `--project_dir`
             The path to your project directory.
+        - `-c`, `--config_file`
+            The project config file name.
     """
     parser = at_launching()
     parser.add_argument("-d","--project_dir",type=str,default="./",
                         help="The path to your project directory.")
-
+    
+    parser.add_argument("-c","--config_file",type=str,default=DEFAULT_CONFIG_FILE_NAME,
+                        help="The project config file name.")
+    
     return parser
 
