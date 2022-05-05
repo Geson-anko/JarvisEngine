@@ -1,0 +1,9 @@
+{
+    name: "geson",
+    "age": 18,
+    sex: {
+        "real": "male",
+        "virtual": "female"
+    },
+    student: true,
+}
