@@ -1,5 +1,6 @@
 from JarvisEngine.core import parsers
 import argparse
+from JarvisEngine import constants
 
 def _parse_args(parser:argparse.ArgumentParser,argv:list[str]) -> argparse.Namespace:
     return parser.parse_args(argv)
@@ -74,6 +75,7 @@ def test_at_running():
     argv = "run"
     args = _parse_args(parser, argv.split())
     assert args.project_dir == "./"
+    assert args.config_file == constants.DEFAULT_CONFIG_FILE_NAME
     
     argv = "run -d=aaa"
     args = _parse_args(parser, argv.split())
@@ -82,5 +84,13 @@ def test_at_running():
     argv = "run --project_dir bbb"
     args = _parse_args(parser, argv.split())
     assert args.project_dir == "bbb"
+    
+    argv = "run -c aaa"
+    args = _parse_args(parser, argv.split())
+    assert args.config_file == "aaa"
+
+    argv = "run --config_file=bbb"
+    args = _parse_args(parser, argv.split())
+    assert args.config_file == "bbb"
     
 
