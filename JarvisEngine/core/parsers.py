@@ -56,6 +56,8 @@ def at_running() -> ArgumentParser:
             The path to your project directory.
         - `-c`, `--config_file`
             The project config file name.
+        - `-ec`, `--engine_config_file`
+            The path to the engine config file.
     """
     parser = at_launching()
     parser.add_argument("-d","--project_dir",type=str,default="./",
@@ -64,5 +66,7 @@ def at_running() -> ArgumentParser:
     parser.add_argument("-c","--config_file",type=str,default=DEFAULT_CONFIG_FILE_NAME,
                         help="The project config file name.")
     
+    parser.add_argument("-ec", "--engine_config_file",type=str, default=DEFAULT_ENGINE_CONFIG_FILE,
+                        help="The path to the engine config file.")
     return parser
 
