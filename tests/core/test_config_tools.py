@@ -1,7 +1,7 @@
 from JarvisEngine.core import config_tools
 
 def test_read_toml():
-    conf = config_tools.read_toml("tests/core/config.toml")
+    conf = config_tools.read_toml("tests/core/test_config.toml")
     assert conf["title"] == "TOML Example"
     
     database = conf["database"]
