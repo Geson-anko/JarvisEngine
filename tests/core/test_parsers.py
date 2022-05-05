@@ -76,7 +76,8 @@ def test_at_running():
     args = _parse_args(parser, argv.split())
     assert args.project_dir == "./"
     assert args.config_file == constants.DEFAULT_CONFIG_FILE_NAME
-    
+    assert args.engine_config_file == constants.DEFAULT_ENGINE_CONFIG_FILE
+
     argv = "run -d=aaa"
     args = _parse_args(parser, argv.split())
     assert args.project_dir == "aaa"
@@ -92,5 +93,13 @@ def test_at_running():
     argv = "run --config_file=bbb"
     args = _parse_args(parser, argv.split())
     assert args.config_file == "bbb"
+    
+    argv = "run -ec aaa"
+    args = _parse_args(parser, argv.split())
+    assert args.engine_config_file == "aaa"
+
+    argv = "run --engine_config_file bbb"
+    args = _parse_args(parser, argv.split())
+    assert args.engine_config_file == "bbb"
     
 
