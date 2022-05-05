@@ -1,5 +1,6 @@
 import toml
 import json5
+from attr_dict import AttrDict
 
 def read_toml(file_path:str, mode:str="r", encoding:str="utf-8",**kwds) -> dict:
     """read toml file."""
@@ -11,3 +12,6 @@ def read_json(file_path:str, mode:str="r", encoding:str="utf-8",**kwds) -> dict:
     with open(file_path,mode, encoding=encoding,**kwds) as f:
         return json5.load(f)
         
+def dict2attr(d:dict) -> AttrDict:
+    """converts dict to AttrDict."""
+    return AttrDict(d)
