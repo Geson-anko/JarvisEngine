@@ -17,3 +17,20 @@ def test_read_json():
     assert conf["sex"]["real"] == "male"
     assert conf["sex"]["virtual"] == "female"
     assert conf["student"] == True
+
+def test_dict2attr():
+    d = {
+        "name": "geson",
+        "age": 18,
+        "sex": {
+            "real": "male",
+            "virtual": "female"
+        },
+        "student": True,
+    }
+    conf = config_tools.dict2attr(d)
+    assert conf.name == "geson"
+    assert conf.age == 18
+    assert conf.sex.real == "male"
+    assert conf.sex.virtual == "female"
+    assert conf.student== True
