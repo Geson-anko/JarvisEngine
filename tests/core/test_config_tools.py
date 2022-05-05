@@ -9,3 +9,11 @@ def test_read_toml():
     assert database["ports"] == [ 8000, 8001, 8002 ]
     assert database["connection_max"] == 5000
     assert database["enabled"] == True
+
+def test_read_json():
+    conf = config_tools.read_json("tests/core/test_config.json5")
+    assert conf["name"] == "geson"
+    assert conf["age"] == 18
+    assert conf["sex"]["real"] == "male"
+    assert conf["sex"]["virtual"] == "female"
+    assert conf["student"] == True
