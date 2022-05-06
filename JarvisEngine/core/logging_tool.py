@@ -14,3 +14,10 @@ from logging_server import LoggingServer, SocketLogger as Logger
 import logging
 
 MAIN_LOGGER_NAME = "MAIN"
+
+def getLogger(name:str = None) -> logging.Logger:
+    """Return `logging.Logger`.
+    This interface will be used for 
+    adding default logger components.
+    """
+    return logging.getLogger(name)
