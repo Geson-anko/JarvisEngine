@@ -1,6 +1,7 @@
 from attr_dict import AttrDict
 from folder_dict import FolderDict
 from typing import *
+from ..core import logging_tool
 
 class BaseApp(object):
     """
@@ -43,6 +44,7 @@ class BaseApp(object):
         self.__engine_config = engine_config
         self.__project_config = project_config
         self.__app_dir = app_dir
+        self.__logger = logging_tool.getAppLogger(name,engine_config.logging)
 
     @property
     def name(self) -> str:
@@ -63,3 +65,7 @@ class BaseApp(object):
     @property
     def app_dir(self) -> str or None:
         return self.__app_dir
+
+    @property
+    def logger(self) -> logging_tool.Logger:
+        return self.__logger
