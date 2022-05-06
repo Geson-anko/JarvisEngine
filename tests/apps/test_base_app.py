@@ -3,6 +3,7 @@ from JarvisEngine.apps import base_app
 # prepare 
 from JarvisEngine.core.config_tools import read_json, read_toml, dict2attr
 from JarvisEngine.constants import DEFAULT_ENGINE_CONFIG_FILE
+from JarvisEngine.core import logging_tool
 TEST_CONFIG_FILE_PATH = "TestEngineProject/config.json5"
 
 project_config = dict2attr(read_json(TEST_CONFIG_FILE_PATH))
@@ -18,7 +19,6 @@ def _check_property_override(app, attr:str):
     except AttributeError: pass
 
 def test_properties():
-    from JarvisEngine.core import logging_tool
     name = "MAIN.App1.App1_1"
     config = project_config.App1
     app_dir = "TestEngineProject/App1/App1_1"
