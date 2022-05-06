@@ -24,7 +24,7 @@ def getLogger(name:str = None) -> logging.Logger:
     """
     return logging.getLogger(name)
 
-def getAppLogger(name:str, log_conf:AttrDict) -> None:
+def getAppLogger(name:str, log_conf:AttrDict) -> Logger:
     """Get Socketlogger for Applications.
     Args:
     - name
