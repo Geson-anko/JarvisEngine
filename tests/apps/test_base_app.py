@@ -18,6 +18,7 @@ def _check_property_override(app, attr:str):
     except AttributeError: pass
 
 def test_properties():
+    from JarvisEngine.core import logging_tool
     name = "MAIN.App1.App1_1"
     config = project_config.App1
     app_dir = "TestEngineProject/App1/App1_1"
@@ -28,9 +29,11 @@ def test_properties():
     assert app.engine_config == engine_config
     assert app.project_config == project_config
     assert app.app_dir == app_dir
+    assert isinstance(app.logger, logging_tool.Logger)
 
     _check_property_override(app, "name")
     _check_property_override(app, "config")
     _check_property_override(app, "engine_config")
     _check_property_override(app, "project_config")
     _check_property_override(app, "app_dir")
+    _check_property_override(app, "logger")
