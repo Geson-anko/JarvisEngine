@@ -24,6 +24,23 @@ def getLogger(name:str = None) -> logging.Logger:
     """
     return logging.getLogger(name)
 
+def getAppLogger(name:str, log_conf:AttrDict) -> None:
+    """Get Socketlogger for Applications.
+    Args:
+    - name
+        logger name.
+    - log_conf
+        The config of logging.(actually, `engine_config.logging`)
+        This must have the following attributes.
+            - log_level:str
+            - host:str
+            - port:int
+    """
+    log_level = log_conf.log_level
+    host = log_conf.host
+    port = log_conf.port
+    return Logger(name, log_level,host,port)
+
 def setRootLoggerComponents(log_conf:AttrDict) -> None:
     """Set components to root logger.
     Args:

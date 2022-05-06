@@ -6,6 +6,20 @@ def test_MAIN_LOGGER_NAME():
 def test_getLogger():
     import logging
     assert isinstance(logging_tool.getLogger(), logging.Logger)
+
+def test_getAppLogger():
+    class log_conf:
+        log_level = "DEBUG"
+        host = "127.0.0.1"
+        port = 9999
+    name = "aaa"
+    logger:logging_tool.Logger = logging_tool.getAppLogger(name,log_conf)
+    
+    assert isinstance(logger, logging_tool.Logger)
+    assert logger.level == log_conf.log_level
+    assert logger.host == log_conf.host
+    assert logger.port == log_conf.port
+    assert logger.name == name
     
 def test_setRootLoggerComponents():
     from JarvisEngine.constants import DEFAULT_ENGINE_CONFIG_FILE
