@@ -13,7 +13,7 @@ def test_getAppLogger():
         host = "127.0.0.1"
         port = 9999
     name = "aaa"
-    logger:logging_tool.Logger = logging_tool.getAppLogger(name,log_conf)
+    logger = logging_tool.getAppLogger(name,log_conf)
     
     assert isinstance(logger, logging_tool.Logger)
     assert logger.level == log_conf.log_level
