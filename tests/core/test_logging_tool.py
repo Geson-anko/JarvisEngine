@@ -7,3 +7,26 @@ def test_getLogger():
     import logging
     assert isinstance(logging_tool.getLogger(), logging.Logger)
     
+def test_setRootLoggerComponents():
+    from JarvisEngine.constants import DEFAULT_ENGINE_CONFIG_FILE
+    from JarvisEngine.core.config_tools import read_toml, dict2attr
+    config = read_toml(DEFAULT_ENGINE_CONFIG_FILE)
+    log_level = "DEBUG"
+    config["logging"]["log_level"] = log_level
+    log_conf = dict2attr(config).logging
+    logging_tool.setRootLoggerComponents(log_conf)
+
+    import logging
+    root_logger = logging.getLogger()
+    assert root_logger.level == logging._nameToLevel[log_level]
+    assert root_logger.hasHandlers()
+    hdlrs = root_logger.handlers[4:] # ignore pytest handlers
+
+    sh = hdlrs[0]
+    assert isinstance(sh, logging.StreamHandler)
+    assert sh.level == logging.NOTSET
+    assert sh.formatter._fmt == log_conf.message_format
+    assert sh.formatter.datefmt == log_conf.date_format
+    
+    
+    
