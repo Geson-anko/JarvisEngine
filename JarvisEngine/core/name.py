@@ -1,14 +1,19 @@
 SEP = "."
 
 def clean(name:str) -> str:
-    """clean name."""
+    """clean name.
+    Erase all SEP's at the head and tail of name.
+    Ex:
+        "..a.b.c.." -> "a.b.c"
+        ".d.e" -> "d.e"
+    """
     if name[0] == SEP:
-        start = 1
+        start = count_head_sep(name)
     else:
         start = 0
     
     if name[-1] == SEP:
-        end = -1
+        end = -count_head_sep(name[::-1])
     else:
         end = len(name)
 

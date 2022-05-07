@@ -8,6 +8,10 @@ def test_clean():
     assert name.clean("d.e.") == "d.e"
     assert name.clean(".f.") == "f"
     assert name.clean(".g.h") == "g.h"
+    
+    assert name.clean("..a.b.c..") == "a.b.c"
+    assert name.clean("..d.e") == "d.e"
+    assert name.clean("f....") == "f"
 
 def test_join():
     assert name.join("a","b") == "a.b"
