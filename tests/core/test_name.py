@@ -15,3 +15,11 @@ def test_join():
     assert name.join(".a.b.","c.",".d") == "a.b.c.d"
     assert name.join("a","b","c","d") == "a.b.c.d"
     assert name.join(".a.b.c.d") == "a.b.c.d"
+
+def test_count_head_sep():
+    assert name.count_head_sep("..a.b.") == 2
+    assert name.count_head_sep("") == 0
+    assert name.count_head_sep(".....") == 5
+    assert name.count_head_sep("asf....") == 0
+    assert name.count_head_sep("..v..s..a.sd") == 2
+    
