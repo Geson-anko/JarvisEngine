@@ -37,3 +37,24 @@ def test_properties():
     _check_property_override(app, "project_config")
     _check_property_override(app, "app_dir")
     _check_property_override(app, "logger")
+
+def test_set_config_attrs():
+    name = "MAIN.App1"
+    config = project_config.App1
+    app_dir = "TestEngineProject/App1"
+    app = base_app.BaseApp(name, config, engine_config, project_config, app_dir)
+    app.set_config_attrs()
+
+    assert app.module_name == config.path
+    assert app.is_thread == config.thread
+    assert app.child_app_configs == config.apps
+
+    name = "MAIN.App0"
+    config = project_config.App0
+    app_dir = "TestEngineProject/App0"
+    app = base_app.BaseApp(name, config, engine_config, project_config, app_dir)
+    app.set_config_attrs()
+
+    assert app.module_name == config.path
+    assert app.is_thread == config.thread
+    assert app.child_app_configs == base_app.AttrDict()
