@@ -45,6 +45,9 @@ class BaseApp(object):
         self.__project_config = project_config
         self.__app_dir = app_dir
         self.__logger = logging_tool.getAppLogger(name,engine_config.logging)
+        
+        self.set_config_attrs()
+
 
     @property
     def name(self) -> str:
