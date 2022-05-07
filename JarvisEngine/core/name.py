@@ -13,7 +13,21 @@ def clean(name:str) -> str:
         end = len(name)
 
     return name[start:end]
-    
+
+def count_head_sep(name:str) -> int:
+    """count number of head separator of name.
+    Ex:
+        "..a.b" -> 2
+        "...c" -> 3
+    """
+    num = 0
+    for s in name:
+        if s != SEP:
+            return num
+        else:
+            num += 1
+    return num
+
 def join(name:str, *others:str) -> str:
     """join names
     Ex: join("a.b.","c.d") -> "a.b.c.d"
