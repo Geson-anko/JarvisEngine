@@ -26,4 +26,10 @@ def test_count_head_sep():
     assert name.count_head_sep(".....") == 5
     assert name.count_head_sep("asf....") == 0
     assert name.count_head_sep("..v..s..a.sd") == 2
-    
+
+
+def test_join_relatively():
+    assert name.join_relatively("a.b.c","..d.e") == "a.b.d.e"
+    assert name.join_relatively("a.", "...d.e.f") == "d.e.f"
+    assert name.join_relatively("a.b.c",".d.e") == "a.b.c.d.e"
+    assert name.join_relatively("a","b") == "a.b"
