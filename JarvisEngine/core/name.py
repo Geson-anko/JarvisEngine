@@ -33,6 +33,23 @@ def count_head_sep(name:str) -> int:
             num += 1
     return num
 
+def join_relatively(name:str, another:str) -> str:
+    """Join another to name.
+    Ex:
+        join_relatively("a.b.c","..d.e") -> "a.b.d.e"
+        join_relatively("a.", "...d.e.f") -> "d.e.f"
+    """
+    name = clean(name)
+    n_sep = count_head_sep(another) - 1
+    if n_sep > 0:
+        splited = name.split(SEP)[:-n_sep]
+        name = SEP.join(splited)
+    another = clean(another)
+    if name == "":
+        return another
+    else:
+        return f"{name}{SEP}{another}"
+
 def join(name:str, *others:str) -> str:
     """join names
     Ex: join("a.b.","c.d") -> "a.b.c.d"
