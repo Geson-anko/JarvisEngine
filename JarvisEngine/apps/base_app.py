@@ -69,3 +69,21 @@ class BaseApp(object):
     @property
     def logger(self) -> logging_tool.Logger:
         return self.__logger
+
+    def set_config_attrs(self) -> None:
+        """set config attrs to self.
+        - module_name: str
+            The import name of the application.            
+        - is_thread: bool
+            Whether the App is thread or process.
+        - child_app_configs: 
+            Child app configs of the application.
+        """
+        self.module_name:str = self.config.path
+        self.is_thread:bool = self.config.thread
+
+        if hasattr(self.config, "apps"):
+            self.child_app_configs = self.config.apps
+        else:
+            self.child_app_configs = AttrDict()    
+        
