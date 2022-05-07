@@ -51,11 +51,12 @@ def join_relatively(name:str, another:str) -> str:
         return f"{name}{SEP}{another}"
 
 def join(name:str, *others:str) -> str:
-    """join names
-    Ex: join("a.b.","c.d") -> "a.b.c.d"
+    """join names. Supported relative join.
+    Ex: 
+        join("a.b.","c.d") -> "a.b.c.d"
+        join("a.b.c","..d.e","...e.c") -> "a.b.e.c"
     """
     name = clean(name)
     for n in others:
-        n = clean(n)
-        name = f"{name}{SEP}{n}"
+        name = join_relatively(name, n)
     return name
