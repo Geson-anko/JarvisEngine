@@ -14,6 +14,11 @@ class BaseApp(object):
     - child_apps  
         The ordered dictionary that contains constructed child apps.
         self.child_apps["child_name"] -> child app
+    
+    
+    Override methods
+    - Init()  
+        called at end of `__init__`
     """
 
 
@@ -57,6 +62,10 @@ class BaseApp(object):
         self.set_config_attrs()
 
         self.construct_child_apps()
+
+        self.Init()
+
+    def Init(self)-> NoReturn: pass
 
     @property
     def name(self) -> str:
