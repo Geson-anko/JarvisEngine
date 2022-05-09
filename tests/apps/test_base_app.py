@@ -4,7 +4,10 @@ from JarvisEngine.apps import base_app
 from JarvisEngine.core.config_tools import read_json, read_toml, dict2attr
 from JarvisEngine.constants import DEFAULT_ENGINE_CONFIG_FILE
 from JarvisEngine.core import logging_tool
-TEST_CONFIG_FILE_PATH = "TestEngineProject/config.json5"
+import os
+
+PROJECT_DIR = "TestEngineProject"
+TEST_CONFIG_FILE_PATH = os.path.join(PROJECT_DIR,"config.json5")
 
 project_config = dict2attr(read_json(TEST_CONFIG_FILE_PATH))
 
@@ -12,12 +15,20 @@ engine_config = read_toml(DEFAULT_ENGINE_CONFIG_FILE)
 engine_config["logging"]["log_level"] = "DEBUG"
 engine_config = dict2attr(engine_config)
 
+def _cd_project_dir(func):
+    def cd(*args, **kwds):
+        os.chdir(PROJECT_DIR)
+        func(*args,**kwds)
+        os.chdir("../")
+    return cd
+
 def _check_property_override(app, attr:str):
     try:
         setattr(app, attr, None)
         raise AssertionError(f"The property `{attr}` of {app} is overrided!")
     except AttributeError: pass
 
+@_cd_project_dir
 def test_properties():
     name = "MAIN.App1.App1_1"
     config = project_config.App1
@@ -38,6 +49,7 @@ def test_properties():
     _check_property_override(app, "app_dir")
     _check_property_override(app, "logger")
 
+@_cd_project_dir
 def test_set_config_attrs():
     name = "MAIN.App1"
     config = project_config.App1
