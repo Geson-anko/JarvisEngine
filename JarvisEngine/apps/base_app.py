@@ -10,6 +10,10 @@ from collections import OrderedDict
 class BaseApp(object):
     """
     The base class of all applications in JarvisEngine.
+    Attrs:
+    - child_apps  
+        The ordered dictionary that contains constructed child apps.
+        self.child_apps["child_name"] -> child app
     """
 
 
