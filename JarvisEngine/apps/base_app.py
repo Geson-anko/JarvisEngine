@@ -1,11 +1,19 @@
+from __future__ import annotations
 from attr_dict import AttrDict
 from folder_dict import FolderDict
 from typing import *
-from ..core import logging_tool
+from ..core import logging_tool, name as name_tools
+import importlib
+import os
+from collections import OrderedDict
 
 class BaseApp(object):
     """
     The base class of all applications in JarvisEngine.
+    Attrs:
+    - child_apps  
+        The ordered dictionary that contains constructed child apps.
+        self.child_apps["child_name"] -> child app
     """
 
 
@@ -48,6 +56,7 @@ class BaseApp(object):
         
         self.set_config_attrs()
 
+        self.construct_child_apps()
 
     @property
     def name(self) -> str:
@@ -89,4 +98,25 @@ class BaseApp(object):
             self.child_app_configs = self.config.apps
         else:
             self.child_app_configs = AttrDict()    
+
+    def construct_child_apps(self):
+        """Construct child applications of this.
+        you can see constructed child apps 
+        by `self.child_apps` attribute.
+        """
+        self.child_apps = OrderedDict()
+        for child_name, child_conf in self.child_app_configs.items():
+            ch_path:str = child_conf.path 
+            
+            full_child_name = name_tools.join(self.name, child_name)
+            mod_name, cls_name = ch_path.rsplit(".",1)
+            mod = importlib.import_module(mod_name)
+            app_cls:BaseApp = getattr(mod,cls_name)
+            app_dir = os.path.dirname(mod.__file__)
+
+            child_app = app_cls(
+                full_child_name, child_conf,self.engine_config,
+                self.project_config, app_dir
+            )
+            self.child_apps[child_name] = child_app
         

@@ -5,8 +5,10 @@ from JarvisEngine.core.config_tools import read_json, read_toml, dict2attr
 from JarvisEngine.constants import DEFAULT_ENGINE_CONFIG_FILE
 from JarvisEngine.core import logging_tool
 import os
+import sys
 
 PROJECT_DIR = "TestEngineProject"
+sys.path.insert(0,os.path.join(os.getcwd(),PROJECT_DIR))
 TEST_CONFIG_FILE_PATH = os.path.join(PROJECT_DIR,"config.json5")
 
 project_config = dict2attr(read_json(TEST_CONFIG_FILE_PATH))
@@ -29,12 +31,13 @@ def _check_property_override(app, attr:str):
     except AttributeError: pass
 
 @_cd_project_dir
-def test_properties():
+def test__init__():
+    
+    # test_properties():
     name = "MAIN.App1.App1_1"
     config = project_config.App1
     app_dir = "TestEngineProject/App1/App1_1"
     app = base_app.BaseApp(name, config, engine_config, project_config, app_dir)
-
     assert app.name == name
     assert app.config == config
     assert app.engine_config == engine_config
@@ -49,8 +52,7 @@ def test_properties():
     _check_property_override(app, "app_dir")
     _check_property_override(app, "logger")
 
-@_cd_project_dir
-def test_set_config_attrs():
+    # test_set_config_attrs():
     name = "MAIN.App1"
     config = project_config.App1
     app_dir = "TestEngineProject/App1"
@@ -68,3 +70,22 @@ def test_set_config_attrs():
     assert app.module_name == config.path
     assert app.is_thread == config.thread
     assert app.child_app_configs == base_app.AttrDict()
+
+    # test construct_child_apps()
+    name = "MAIN.App1"
+    config = project_config.App1
+    app_dir = os.path.join(os.getcwd(), "App1")
+    app = base_app.BaseApp(name, config, engine_config, project_config, app_dir)
+
+    assert "App1_1" in app.child_apps
+    assert "App1_2" in app.child_apps
+    App1_1, App1_2 = app.child_apps["App1_1"], app.child_apps["App1_2"]
+    assert App1_1.name == "MAIN.App1.App1_1"
+    assert App1_2.name == "MAIN.App1.App1_2"
+    assert App1_1.module_name == "App1.App1_1.app.App1_1"
+    assert App1_2.module_name == "App1.App1_2.app.App1_2"
+    apps = config.apps
+    assert App1_1.config == apps.App1_1
+    assert App1_2.config == apps.App1_2
+    assert App1_1.app_dir == os.path.join(app_dir, "App1_1")
+    assert App1_2.app_dir == os.path.join(app_dir, "App1_2")
