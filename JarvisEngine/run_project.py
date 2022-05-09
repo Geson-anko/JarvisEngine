@@ -4,6 +4,7 @@ import os
 from attr_dict import AttrDict
 from .constants import DEFAULT_ENGINE_CONFIG_FILE
 from typing import *
+import sys
 
 def run():
     """runs JE project."""
@@ -15,9 +16,10 @@ def run():
     config_file = args.config_file
     log_level = args.log_level
 
-    # move to project directory.
+    # move to project directory and add it into path.
     os.chdir(project_dir)
     project_dir = os.getcwd()
+    sys.path.insert(0,project_dir)
 
     # load engine config file.
     engine_config = read_toml(engine_config_file)
