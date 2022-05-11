@@ -2,6 +2,7 @@ from __future__ import annotations
 from attr_dict import AttrDict
 from folder_dict import FolderDict
 from typing import *
+from types import * 
 from ..core import logging_tool, name as name_tools
 import importlib
 import os
@@ -118,9 +119,7 @@ class BaseApp(object):
             ch_path:str = child_conf.path 
             
             full_child_name = name_tools.join(self.name, child_name)
-            mod_name, cls_name = ch_path.rsplit(".",1)
-            mod = importlib.import_module(mod_name)
-            app_cls:BaseApp = getattr(mod,cls_name)
+            app_cls, mod = self.import_app(ch_path)
             app_dir = os.path.dirname(mod.__file__)
 
             child_app = app_cls(
@@ -128,4 +127,25 @@ class BaseApp(object):
                 self.project_config, app_dir
             )
             self.child_apps[child_name] = child_app
+
+    @staticmethod
+    def import_app(path:str) -> Tuple[BaseApp, ModuleType]:
+        """import the application class.
+        Args:
+        - path: str
+            The import name of app.
+            `import <path>`
         
+        return -> AppClass, Module
+
+        If imported class is not subclass of BaseApp, 
+        This method raises `ImportError`.
+        """
+        mod_name, cls_name= path.rsplit(".",1)
+        mod = importlib.import_module(mod_name)
+        app_cls = getattr(mod, cls_name)
+        
+        if issubclass(app_cls, BaseApp):
+            return app_cls, mod
+        else:
+            raise ImportError(f"{path} is not a subclass of BaseApp!")
