@@ -67,6 +67,16 @@ def setRootLoggerComponents(log_conf:AttrDict) -> None:
     root_logger.addHandler(sh)
     root_logger.setLevel(log_level)
 
+def getLoggingServer(log_conf:AttrDict) -> LoggingServer:
+    """Constructs LoggingServer using log_conf
+    Args:
+    - log_conf:
+        The conifg of logging (actually, `engine_config.logging`)
+        This must have the followings.
+            - host:str
+            - port:int
+    """
+    host = log_conf.host
+    port = log_conf.port
 
-    
-
+    return LoggingServer(host, port)
