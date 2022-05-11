@@ -31,6 +31,19 @@ def _check_property_override(app, attr:str):
     except AttributeError: pass
 
 @_cd_project_dir
+def test_import_app():
+    
+    path = "App0.app.App0"
+    app_cls, mod = base_app.BaseApp.import_app(path)
+    assert issubclass(app_cls, base_app.BaseApp)
+    assert mod.__file__ == os.path.join(os.getcwd(), "App0","app.py")
+    try:
+        base_app.BaseApp.import_app("JarvisEngine.core.Logger")
+        raise AssertionError
+    except ImportError: pass
+    
+
+@_cd_project_dir
 def test__init__():
     
     # test_properties():
