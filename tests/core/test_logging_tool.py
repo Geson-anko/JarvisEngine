@@ -42,5 +42,12 @@ def test_setRootLoggerComponents():
     assert sh.formatter._fmt == log_conf.message_format
     assert sh.formatter.datefmt == log_conf.date_format
     
+def test_getLoggingServer():
+    class log_conf:
+        host = "127.0.0.1"
+        port = 8888
     
+    server = logging_tool.getLoggingServer(log_conf)
+    assert isinstance(server, logging_tool.LoggingServer)
+    assert server.server_address == ("127.0.0.1",8888)
     
