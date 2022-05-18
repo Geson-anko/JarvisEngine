@@ -14,7 +14,7 @@
             },
             App1_2: {
                 path: "App1.App1_2.app.App1_2",
-                thread: true,
+                thread: false,
             }
         }
     }
