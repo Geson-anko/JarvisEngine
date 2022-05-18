@@ -138,12 +138,12 @@ def test_process_shared_values():
     fdwl= FolderDict_withLock(sep=".")
 
     MainApp.process_shared_values = fdwl
-    assert MainApp.process_shared_values == fdwl
-    assert MainApp._process_shared_values == fdwl
-    assert App0.process_shared_values == fdwl
-    assert App1.process_shared_values == fdwl
+    assert MainApp.process_shared_values is fdwl
+    assert MainApp._process_shared_values is fdwl
+    assert App0.process_shared_values is fdwl
+    assert App1.process_shared_values is fdwl
     App1_1 = App1.child_apps["App1_1"]
     App1_2 = App1.child_apps["App1_2"]
 
-    assert App1_1.process_shared_values == fdwl
-    assert App1_2._process_shared_values == fdwl
+    assert App1_1.process_shared_values is fdwl
+    assert App1_2._process_shared_values is fdwl
