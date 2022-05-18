@@ -105,6 +105,11 @@ def test__init__():
     App1_1 = app.child_thread_apps["App1_1"]
     assert App1_1.is_thread == True
 
+    ### child_process_apps
+    assert "App1_1" not in app.child_process_apps
+    assert "App1_2" in app.child_process_apps
+    App1_2 = app.child_process_apps["App1_2"]
+
     apps = config.apps
     assert App1_1.config == apps.App1_1
     assert App1_2.config == apps.App1_2
