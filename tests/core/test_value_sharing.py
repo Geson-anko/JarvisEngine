@@ -4,7 +4,6 @@ from JarvisEngine.core.value_sharing import (
 )
 import multiprocessing as mp
 import ctypes
-import threading
 
 def assert_modify_value(obj: ReadOnlyValue):
     try:
@@ -98,18 +97,8 @@ def test_make_readonly():
         raise AssertionError
     except ValueError: pass
 
-def test_FolderDict_withLock():
-    fdwl = value_sharing.FolderDict_withLock(sep=".")
-    assert isinstance(fdwl._lock, threading._CRLock)
-    assert fdwl._lock == fdwl.get_lock()
-    
-    lock = threading.RLock()
-    fdwl = value_sharing.FolderDict_withLock(sep=".", lock=lock)
-    assert fdwl.get_lock() == lock
 
-    # Not implemented locking test because I don't know how to test it.
-    fdwl["a.b.c"] = 1 
-    fdwl["a.b.c"]
+
 
 
 
