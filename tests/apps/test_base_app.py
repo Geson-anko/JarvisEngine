@@ -99,8 +99,15 @@ def test__init__():
     assert App1_2.module_name == "App1.App1_2.app.App1_2"
     assert App1_1.is_thread == True
     assert App1_2.is_thread == False
+    ### child_thread_apps
+    assert "App1_1" in app.child_thread_apps
+    assert "App1_2" not in app.child_thread_apps
+    App1_1 = app.child_thread_apps["App1_1"]
+    assert App1_1.is_thread == True
+
     apps = config.apps
     assert App1_1.config == apps.App1_1
     assert App1_2.config == apps.App1_2
     assert App1_1.app_dir == os.path.join(app_dir, "App1_1")
     assert App1_2.app_dir == os.path.join(app_dir, "App1_2")
+
