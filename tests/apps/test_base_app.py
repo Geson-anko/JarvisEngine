@@ -109,6 +109,7 @@ def test__init__():
     assert "App1_1" not in app.child_process_apps
     assert "App1_2" in app.child_process_apps
     App1_2 = app.child_process_apps["App1_2"]
+    assert App1_2.is_thread == False
 
     apps = config.apps
     assert App1_1.config == apps.App1_1
