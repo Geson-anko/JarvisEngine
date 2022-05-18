@@ -24,6 +24,10 @@ class BaseApp(object):
         Contains child apps that are launched as a thread.
         They are `is_thread=True`.
 
+    - child_process_apps: OrderedDict
+        Contains child apps that are launched as a Process.
+        They are `is_thread=False`.
+
     - logger: Logger
         The logger for multiprocessing logging.
 
@@ -147,6 +151,7 @@ class BaseApp(object):
         """
         self.child_apps = OrderedDict()
         self.child_thread_apps = OrderedDict()
+        self.child_process_apps = OrderedDict()
 
         for child_name, child_conf in self.child_app_configs.items():
             ch_path:str = child_conf.path 
@@ -162,6 +167,8 @@ class BaseApp(object):
             self.child_apps[child_name] = child_app
             if child_app.is_thread:
                 self.child_thread_apps[child_name] = child_app
+            else:
+                self.child_process_apps[child_name] = child_app
 
     @staticmethod
     def import_app(path:str) -> Tuple[BaseApp, ModuleType]:
