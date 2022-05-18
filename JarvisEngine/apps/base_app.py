@@ -1,9 +1,9 @@
 from __future__ import annotations
 from attr_dict import AttrDict
-from folder_dict import FolderDict
 from typing import *
 from types import * 
 from ..core import logging_tool, name as name_tools
+from ..core.value_sharing import FolderDict_withLock
 import importlib
 import os
 from collections import OrderedDict
@@ -191,3 +191,21 @@ class BaseApp(object):
             return app_cls, mod
         else:
             raise ImportError(f"{path} is not a subclass of BaseApp!")
+
+    _process_shared_values: FolderDict_withLock = None
+
+    @property
+    def process_shared_values(self) -> FolderDict_withLock | None:
+        return self._process_shared_values
+
+    @process_shared_values.setter
+    def process_shared_values(self, p_sv:FolderDict_withLock) -> None:
+        """
+        Set process shared value to `self` and `child_apps`
+        Do not call if application process was started.
+        """
+        self._process_shared_values = p_sv
+        for app in self.child_apps.values():
+            app.process_shared_values = p_sv
+
+        
