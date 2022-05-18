@@ -4,6 +4,7 @@ from JarvisEngine.apps import base_app
 from JarvisEngine.core.config_tools import read_json, read_toml, dict2attr
 from JarvisEngine.constants import DEFAULT_ENGINE_CONFIG_FILE
 from JarvisEngine.core import logging_tool
+from JarvisEngine.apps.launcher import to_project_config
 import os
 import sys
 
@@ -12,6 +13,7 @@ sys.path.insert(0,os.path.join(os.getcwd(),PROJECT_DIR))
 TEST_CONFIG_FILE_PATH = os.path.join(PROJECT_DIR,"config.json5")
 
 project_config = dict2attr(read_json(TEST_CONFIG_FILE_PATH))
+project_config = to_project_config(project_config)
 
 engine_config = read_toml(DEFAULT_ENGINE_CONFIG_FILE)
 engine_config["logging"]["log_level"] = "DEBUG"
@@ -48,7 +50,7 @@ def test__init__():
     
     # test_properties():
     name = "MAIN.App1.App1_1"
-    config = project_config.App1
+    config = project_config.MAIN.apps.App1
     app_dir = "TestEngineProject/App1/App1_1"
     app = base_app.BaseApp(name, config, engine_config, project_config, app_dir)
     assert app.name == name
@@ -67,7 +69,7 @@ def test__init__():
 
     # test_set_config_attrs():
     name = "MAIN.App1"
-    config = project_config.App1
+    config = project_config.MAIN.apps.App1
     app_dir = "TestEngineProject/App1"
     app = base_app.BaseApp(name, config, engine_config, project_config, app_dir)
 
@@ -76,7 +78,7 @@ def test__init__():
     assert app.child_app_configs == config.apps
 
     name = "MAIN.App0"
-    config = project_config.App0
+    config = project_config.MAIN.apps.App0
     app_dir = "TestEngineProject/App0"
     app = base_app.BaseApp(name, config, engine_config, project_config, app_dir)
 
@@ -86,7 +88,7 @@ def test__init__():
 
     # test construct_child_apps()
     name = "MAIN.App1"
-    config = project_config.App1
+    config = project_config.MAIN.apps.App1
     app_dir = os.path.join(os.getcwd(), "App1")
     app = base_app.BaseApp(name, config, engine_config, project_config, app_dir)
 
@@ -116,4 +118,3 @@ def test__init__():
     assert App1_2.config == apps.App1_2
     assert App1_1.app_dir == os.path.join(app_dir, "App1_1")
     assert App1_2.app_dir == os.path.join(app_dir, "App1_2")
-
