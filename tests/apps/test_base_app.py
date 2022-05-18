@@ -7,6 +7,7 @@ from JarvisEngine.core import logging_tool
 from JarvisEngine.apps.launcher import to_project_config
 import os
 import sys
+from JarvisEngine.core.value_sharing import FolderDict_withLock
 
 PROJECT_DIR = "TestEngineProject"
 sys.path.insert(0,os.path.join(os.getcwd(),PROJECT_DIR))
@@ -118,3 +119,31 @@ def test__init__():
     assert App1_2.config == apps.App1_2
     assert App1_1.app_dir == os.path.join(app_dir, "App1_1")
     assert App1_2.app_dir == os.path.join(app_dir, "App1_2")
+
+@_cd_project_dir
+def test_process_shared_values():
+    name = "MAIN"
+    config = project_config.MAIN
+    app_dir = PROJECT_DIR
+    MainApp = base_app.BaseApp(name, config, engine_config,project_config,app_dir)
+    
+    # Initial value is None
+    assert MainApp.process_shared_values == None
+    assert MainApp._process_shared_values == None
+    App0 = MainApp.child_apps["App0"]
+    App1 = MainApp.child_apps["App1"]
+    assert App0.process_shared_values == None
+    assert App1.process_shared_values == None
+
+    fdwl= FolderDict_withLock(sep=".")
+
+    MainApp.process_shared_values = fdwl
+    assert MainApp.process_shared_values == fdwl
+    assert MainApp._process_shared_values == fdwl
+    assert App0.process_shared_values == fdwl
+    assert App1.process_shared_values == fdwl
+    App1_1 = App1.child_apps["App1_1"]
+    App1_2 = App1.child_apps["App1_2"]
+
+    assert App1_1.process_shared_values == fdwl
+    assert App1_2._process_shared_values == fdwl
