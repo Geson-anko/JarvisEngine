@@ -97,6 +97,8 @@ def test__init__():
     assert App1_2.name == "MAIN.App1.App1_2"
     assert App1_1.module_name == "App1.App1_1.app.App1_1"
     assert App1_2.module_name == "App1.App1_2.app.App1_2"
+    assert App1_1.is_thread == True
+    assert App1_2.is_thread == False
     apps = config.apps
     assert App1_1.config == apps.App1_1
     assert App1_2.config == apps.App1_2
