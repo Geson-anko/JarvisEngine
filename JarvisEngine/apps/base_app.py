@@ -12,10 +12,37 @@ class BaseApp(object):
     """
     The base class of all applications in JarvisEngine.
     Attrs:
-    - child_apps  
+    - name: str
+        The identical name among all applications.
+        This is given by parent application.
+
+    - child_apps: OrderedDict  
         The ordered dictionary that contains constructed child apps.
         self.child_apps["child_name"] -> child app
+
+    - logger: Logger
+        The logger for multiprocessing logging.
+
+    - config: AttrDict
+        `config.json5` of under the application.
+
+    - engine_config: AttrDict
+        AttrDict of `engine_config.toml`
     
+    - project_config: AttrDict
+        Full of `config.json5`
+
+    - app_dir: str | None
+        The directory to the application.
+    
+    - module_name: str
+        The import name of application.
+
+    - is_thread: bool
+        Whether the application is thread or process.
+
+    - child_app_configs
+        `apps` attribute of `self.config`.
     
     Override methods
     - Init()  
