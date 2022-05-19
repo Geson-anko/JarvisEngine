@@ -231,4 +231,15 @@ class BaseApp(object):
         self.thread_shared_values = t_sv
         for app in self.child_thread_apps.values():
             app.set_thread_shared_values_to_all_apps(t_sv)
-            
+
+    def _add_shared_value(self, obj_name:str, obj:Any ,for_thread:bool) -> None:
+        """
+        Add sharing object to shared_values.
+        If for_thread is True, set to `thread_shared_values`,
+        else `process_shared_values`.
+        """
+        name = name_tools.join(self.name, obj_name)
+        if for_thread:
+            self.thread_shared_values[name] = obj
+        else:
+            self.process_shared_values[name] = obj
