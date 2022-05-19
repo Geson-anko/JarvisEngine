@@ -181,3 +181,26 @@ def test_thread_shared_values():
     assert MainApp.thread_shared_values is fdwl
     
 
+@_cd_project_dir
+def test_thread_shared_values():
+    name = "MAIN"
+    config = project_config.MAIN
+    app_dir = PROJECT_DIR
+    MainApp = base_app.BaseApp(name, config, engine_config,project_config,app_dir)
+    
+    fdwl= FolderDict_withLock(sep=".")
+    MainApp.set_thread_shared_values_to_all_apps(fdwl)
+    assert MainApp.thread_shared_values is fdwl
+    App0 = MainApp.child_thread_apps["App0"]
+    App1 = MainApp.child_apps["App1"]
+    App1_1 = App1.child_thread_apps["App1_1"]
+    App1_2 = App1.child_apps["App1_2"]
+
+    assert App0.thread_shared_values is fdwl
+    assert App1.thread_shared_values is None
+    assert App1_1.thread_shared_values is None # App1 is not thread
+    assert App1_2.thread_shared_values is None
+
+    App1_1.set_thread_shared_values_to_all_apps(fdwl)
+    assert App1_1.thread_shared_values is fdwl 
+    assert App1_2.thread_shared_values is None
