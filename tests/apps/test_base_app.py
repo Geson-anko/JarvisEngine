@@ -242,3 +242,20 @@ def test_addProcessSharedValue():
     assert MainApp.process_shared_values["MAIN.ccc"] == 30
     assert MainApp.process_shared_values["MAIN.ddd"] == 40
     assert MainApp.process_shared_values["MAIN.eee"] == 50
+
+@_cd_project_dir
+def test_addThreadSharedValue():
+    name = "MAIN"
+    config = project_config.MAIN
+    app_dir = PROJECT_DIR
+    MainApp = base_app.BaseApp(name, config, engine_config,project_config,app_dir)
+    fdwl= FolderDict_withLock(sep=".")
+
+    MainApp.thread_shared_values = fdwl 
+
+    MainApp.addThreadSharedValue("fff",60)
+    MainApp.addThreadSharedValue("ggg",70)
+    MainApp.addThreadSharedValue("hhh",80)
+    assert MainApp.thread_shared_values["MAIN.fff"] == 60
+    assert MainApp.thread_shared_values["MAIN.ggg"] == 70
+    assert MainApp.thread_shared_values["MAIN.hhh"] == 80
