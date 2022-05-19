@@ -341,3 +341,21 @@ def test_getProcessSharedValue():
     assert MainApp.getProcessSharedValue("MAIN.App0.bbb") == True
     assert App0.getProcessSharedValue("..App1.ccc") == "apple"
     assert App1.getProcessSharedValue(".App1_1.ddd") == 1.0
+
+@_cd_project_dir
+def test_getThreadSharedValue():
+    name = "MAIN"
+    config = project_config.MAIN
+    app_dir = PROJECT_DIR
+    MainApp = base_app.BaseApp(name, config, engine_config,project_config,app_dir)
+    fdwl_thread= FolderDict_withLock(sep=".")
+    MainApp.set_thread_shared_values_to_all_apps(fdwl_thread)
+
+    App0 = MainApp.child_apps["App0"]
+
+    # Thread shared value
+    MainApp.addThreadSharedValue("eee",False)
+    App0.addThreadSharedValue("fff",20)
+
+    assert MainApp.getThreadSharedValue("..MAIN.eee") == False
+    assert App0.getThreadSharedValue("MAIN.App0.fff") == 20
