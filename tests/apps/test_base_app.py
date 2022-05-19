@@ -271,3 +271,15 @@ def test_RegisterProcessSharedValues():
     MainApp.set_process_shared_values_to_all_apps(fdwl)
     with mp.Manager() as shmm:
         MainApp.RegisterProcessSharedValues(shmm)
+
+@_cd_project_dir
+def test_RegisterThreadSharedValues():
+    name = "MAIN"
+    config = project_config.MAIN
+    app_dir = PROJECT_DIR
+    MainApp = base_app.BaseApp(name, config, engine_config,project_config,app_dir)
+    fdwl= FolderDict_withLock(sep=".")
+
+    MainApp.set_thread_shared_values_to_all_apps(fdwl)
+    MainApp.RegisterThreadSharedValues()
+    
