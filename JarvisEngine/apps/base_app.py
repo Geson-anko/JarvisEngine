@@ -256,16 +256,19 @@ class BaseApp(object):
         """Override function.
         Register value for sharing inter `multiprocessing`.
         You must call `super().RegisterProcessSharedValues` in your override
-        because it registers default values that all applications must share.
+        because it calls `<child_app>.RegisterProcessSharedValues`.
         
         Usage:
             Please use `addProcessSharedValue` method to register a shared object.
             The object will be stored into `self.process_shared_values`.
             You can see other shared objects after process launched.
-            
+
 
         Args:
             - sync_manager
                 return value of `multiprocessing.Manager`.
                 Please use it for sharing values.
         """
+        for app in self.child_apps.values():
+            app.RegisterProcessSharedValues(sync_manager)
+
