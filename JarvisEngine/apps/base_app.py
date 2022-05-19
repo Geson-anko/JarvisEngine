@@ -222,4 +222,13 @@ class BaseApp(object):
         self.__thread_shared_values = t_sv
     
 
-
+    def set_thread_shared_values_to_all_apps(self, t_sv:FolderDict_withLock) -> None:
+        """
+        Set to `self` and `child_thread_apps`.
+        You must call after the app process was started. 
+        If called before process start, it will raise Error in the future.
+        """
+        self.thread_shared_values = t_sv
+        for app in self.child_thread_apps.values():
+            app.set_thread_shared_values_to_all_apps(t_sv)
+            
