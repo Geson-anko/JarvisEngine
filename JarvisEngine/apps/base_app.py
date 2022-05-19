@@ -304,3 +304,8 @@ class BaseApp(object):
             return self.thread_shared_values[name]
         else:
             return self.process_shared_values[name]
+
+    def getProcessSharedValue(self, name:str) -> Any:
+        """Interface of `_get_shared_value(...,for_thread=False)`"""
+        return self._get_shared_value(name, False)
+        
