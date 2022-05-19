@@ -289,3 +289,18 @@ class BaseApp(object):
 
         for app in self.child_thread_apps.values():
             app.RegisterThreadSharedValues()
+
+    def _get_shared_value(self, name:str, for_thread:bool) -> Any:
+        """
+        Get shared value from `process_shared_values` or `thread_shared_values`
+        by specifying a name.
+        If name prefix is `.`, count dot and go upstream only its count number.
+        And search and pickup shared value using `name`.
+        """
+        if name_tools.count_head_sep(name) > 0:
+            name = name_tools.join(self.name, name)
+        
+        if for_thread:
+            return self.thread_shared_values[name]
+        else:
+            return self.process_shared_values[name]
