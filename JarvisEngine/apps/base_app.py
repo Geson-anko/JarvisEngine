@@ -192,8 +192,9 @@ class BaseApp(object):
         else:
             raise ImportError(f"{path} is not a subclass of BaseApp!")
 
-    __process_shared_values: FolderDict_withLock = None
 
+    __process_shared_values: FolderDict_withLock = None
+    __thread_shared_values: FolderDict_withLock = None
     @property
     def process_shared_values(self) -> FolderDict_withLock | None:
         return self.__process_shared_values
@@ -210,5 +211,15 @@ class BaseApp(object):
         self.process_shared_values = p_sv
         for app in self.child_apps.values():
             app.set_process_shared_values_to_all_apps(p_sv)
+
+    @property
+    def thread_shared_values(self) -> FolderDict_withLock | None:
+        return self.__thread_shared_values
+
+    @thread_shared_values.setter
+    def thread_shared_values(self, t_sv:FolderDict_withLock) -> None:
+        """If called before process start, it will raise Error in the future."""
+        self.__thread_shared_values = t_sv
+    
 
 

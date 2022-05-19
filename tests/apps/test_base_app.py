@@ -166,3 +166,18 @@ def test_set_process_shared_values_to_all_apps():
     assert App1.process_shared_values is fdwl
     assert App1_1.process_shared_values is fdwl
     assert App1_2.process_shared_values is fdwl
+
+@_cd_project_dir
+def test_thread_shared_values():
+    name = "MAIN"
+    config = project_config.MAIN
+    app_dir = PROJECT_DIR
+    MainApp = base_app.BaseApp(name, config, engine_config,project_config,app_dir)
+    
+    # Initial values is None
+    assert MainApp.thread_shared_values == None
+    fdwl= FolderDict_withLock(sep=".")
+    MainApp.thread_shared_values = fdwl
+    assert MainApp.thread_shared_values is fdwl
+    
+
