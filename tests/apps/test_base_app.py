@@ -129,7 +129,6 @@ def test_process_shared_values():
     
     # Initial value is None
     assert MainApp.process_shared_values == None
-    assert MainApp._process_shared_values == None
     App0 = MainApp.child_apps["App0"]
     App1 = MainApp.child_apps["App1"]
     assert App0.process_shared_values == None
@@ -137,13 +136,33 @@ def test_process_shared_values():
 
     fdwl= FolderDict_withLock(sep=".")
 
-    MainApp.process_shared_values = fdwl
+    MainApp.process_shared_values = fdwl 
     assert MainApp.process_shared_values is fdwl
-    assert MainApp._process_shared_values is fdwl
-    assert App0.process_shared_values is fdwl
-    assert App1.process_shared_values is fdwl
+    # Not set to child_apps.
+    assert App0.process_shared_values == None 
+    assert App1.process_shared_values == None
     App1_1 = App1.child_apps["App1_1"]
     App1_2 = App1.child_apps["App1_2"]
 
+    assert App1_1.process_shared_values == None
+    assert App1_2.process_shared_values == None
+
+@_cd_project_dir
+def test_set_process_shared_values_to_all_apps():
+    name = "MAIN"
+    config = project_config.MAIN
+    app_dir = PROJECT_DIR
+    MainApp = base_app.BaseApp(name, config, engine_config,project_config,app_dir)
+    
+    fdwl= FolderDict_withLock(sep=".")
+    MainApp.set_process_shared_values_to_all_apps(fdwl)
+    assert MainApp.process_shared_values is fdwl
+    App0 = MainApp.child_apps["App0"]
+    App1 = MainApp.child_apps["App1"]
+    App1_1 = App1.child_apps["App1_1"]
+    App1_2 = App1.child_apps["App1_2"]
+
+    assert App0.process_shared_values is fdwl
+    assert App1.process_shared_values is fdwl
     assert App1_1.process_shared_values is fdwl
-    assert App1_2._process_shared_values is fdwl
+    assert App1_2.process_shared_values is fdwl
