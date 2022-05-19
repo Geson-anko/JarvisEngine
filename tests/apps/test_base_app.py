@@ -204,3 +204,26 @@ def test_thread_shared_values():
     App1_1.set_thread_shared_values_to_all_apps(fdwl)
     assert App1_1.thread_shared_values is fdwl 
     assert App1_2.thread_shared_values is None
+
+@_cd_project_dir
+def test__add_shared_value():
+    name = "MAIN"
+    config = project_config.MAIN
+    app_dir = PROJECT_DIR
+    MainApp = base_app.BaseApp(name, config, engine_config,project_config,app_dir)
+    
+    fdwl_thread= FolderDict_withLock(sep=".")
+    fdwl_process= FolderDict_withLock(sep=".")
+    MainApp.set_process_shared_values_to_all_apps(fdwl_process)
+    MainApp.set_thread_shared_values_to_all_apps(fdwl_thread)
+
+    MainApp._add_shared_value("aaa", 10, for_thread=True)
+    assert MainApp.thread_shared_values["MAIN.aaa"] == 10
+    assert MainApp.process_shared_values["MAIN.aaa"] is None
+    assert fdwl_thread["MAIN.aaa"] == 10
+
+    MainApp._add_shared_value("bbb",20,for_thread=False)
+    assert MainApp.thread_shared_values["MAIN.bbb"] is None
+    assert MainApp.process_shared_values["MAIN.bbb"] == 20
+    assert fdwl_process["MAIN.bbb"] == 20
+    
