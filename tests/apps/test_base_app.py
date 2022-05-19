@@ -283,3 +283,36 @@ def test_RegisterThreadSharedValues():
     MainApp.set_thread_shared_values_to_all_apps(fdwl)
     MainApp.RegisterThreadSharedValues()
     
+@_cd_project_dir
+def test__get_shared_value():
+    name = "MAIN"
+    config = project_config.MAIN
+    app_dir = PROJECT_DIR
+    MainApp = base_app.BaseApp(name, config, engine_config,project_config,app_dir)
+    
+    fdwl_thread= FolderDict_withLock(sep=".")
+    fdwl_process= FolderDict_withLock(sep=".")
+    MainApp.set_process_shared_values_to_all_apps(fdwl_process)
+    MainApp.set_thread_shared_values_to_all_apps(fdwl_thread)
+
+    App0 = MainApp.child_apps["App0"]
+    App1 = MainApp.child_apps["App1"]
+    App1_1 = App1.child_apps["App1_1"]
+    App1_2 = App1.child_apps["App1_2"]
+    # Process shared value
+    MainApp.addProcessSharedValue("aaa",10)
+    App0.addProcessSharedValue("bbb",True)
+    App1.addProcessSharedValue("ccc", "apple")
+    App1_1.addProcessSharedValue("ddd",1.0) 
+    # Thread shared value
+    MainApp.addThreadSharedValue("eee",False)
+    App0.addThreadSharedValue("fff",20)
+
+    assert MainApp._get_shared_value("MAIN.aaa",False) == 10
+    assert MainApp._get_shared_value(".aaa",False) == 10
+    assert MainApp._get_shared_value("MAIN.App0.bbb",False) == True
+    assert App0._get_shared_value("..App1.ccc", False) == "apple"
+    assert App1._get_shared_value(".App1_1.ddd",False) == 1.0
+    
+    assert MainApp._get_shared_value("..MAIN.eee",True) == False
+    assert App0._get_shared_value("MAIN.App0.fff" ,True) == 20
