@@ -8,6 +8,7 @@ from JarvisEngine.apps.launcher import to_project_config
 import os
 import sys
 from JarvisEngine.core.value_sharing import FolderDict_withLock
+import multiprocessing as mp
 
 PROJECT_DIR = "TestEngineProject"
 sys.path.insert(0,os.path.join(os.getcwd(),PROJECT_DIR))
@@ -259,3 +260,14 @@ def test_addThreadSharedValue():
     assert MainApp.thread_shared_values["MAIN.fff"] == 60
     assert MainApp.thread_shared_values["MAIN.ggg"] == 70
     assert MainApp.thread_shared_values["MAIN.hhh"] == 80
+
+@_cd_project_dir
+def test_RegisterProcessSharedValues():
+    name = "MAIN"
+    config = project_config.MAIN
+    app_dir = PROJECT_DIR
+    MainApp = base_app.BaseApp(name, config, engine_config,project_config,app_dir)
+    fdwl= FolderDict_withLock(sep=".")
+    MainApp.set_process_shared_values_to_all_apps(fdwl)
+    with mp.Manager() as shmm:
+        MainApp.RegisterProcessSharedValues(shmm)
