@@ -309,3 +309,6 @@ class BaseApp(object):
         """Interface of `_get_shared_value(...,for_thread=False)`"""
         return self._get_shared_value(name, False)
         
+    def getThreadSharedValue(self, name:str) -> Any:
+        """Interface of `_get_shared_value(...,for_thread=True)`"""
+        return self._get_shared_value(name, True)
