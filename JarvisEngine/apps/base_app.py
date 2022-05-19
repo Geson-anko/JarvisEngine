@@ -247,3 +247,8 @@ class BaseApp(object):
     def addProcessSharedValue(self, obj_name:str, obj:Any) -> None:
         """Interface of `_add_shared_value`"""
         return self._add_shared_value(obj_name, obj,False)
+
+    def addThreadSharedValue(self, obj_name:str, obj:Any) -> None:
+        """Interface of `_add_shared_value`"""
+        return self._add_shared_value(obj_name, obj,True)
+
