@@ -272,3 +272,20 @@ class BaseApp(object):
         for app in self.child_apps.values():
             app.RegisterProcessSharedValues(sync_manager)
 
+    def RegisterThreadSharedValues(self) -> None:
+        """Override function.
+        Register value for sharing inter `threading`.
+        You must call `super().RegisterProcessSharedValues` in your override
+        because it calls `<child_app>.RegisterProcessSharedValues`.
+        
+        Usage:
+            Please use `addThreadSharedValue` method to register a shared object.
+            The object will be stored into `self.thread_shared_values`.
+            You can see other shared objects after process launched.
+
+        Args:
+            Nothing.
+        """
+
+        for app in self.child_thread_apps.values():
+            app.RegisterThreadSharedValues()
