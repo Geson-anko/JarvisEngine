@@ -316,3 +316,28 @@ def test__get_shared_value():
     
     assert MainApp._get_shared_value("..MAIN.eee",True) == False
     assert App0._get_shared_value("MAIN.App0.fff" ,True) == 20
+
+@_cd_project_dir
+def test_getProcessSharedValue():
+    name = "MAIN"
+    config = project_config.MAIN
+    app_dir = PROJECT_DIR
+    MainApp = base_app.BaseApp(name, config, engine_config,project_config,app_dir)
+    fdwl_process= FolderDict_withLock(sep=".")
+    MainApp.set_process_shared_values_to_all_apps(fdwl_process)
+    App0 = MainApp.child_apps["App0"]
+    App1 = MainApp.child_apps["App1"]
+    App1_1 = App1.child_apps["App1_1"]
+    App1_2 = App1.child_apps["App1_2"]
+    # Process shared value
+    MainApp.addProcessSharedValue("aaa",10)
+    App0.addProcessSharedValue("bbb",True)
+    App1.addProcessSharedValue("ccc", "apple")
+    App1_1.addProcessSharedValue("ddd",1.0) 
+
+
+    assert MainApp.getProcessSharedValue("MAIN.aaa") == 10
+    assert MainApp.getProcessSharedValue(".aaa") == 10
+    assert MainApp.getProcessSharedValue("MAIN.App0.bbb") == True
+    assert App0.getProcessSharedValue("..App1.ccc") == "apple"
+    assert App1.getProcessSharedValue(".App1_1.ddd") == 1.0
