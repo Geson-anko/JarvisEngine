@@ -227,3 +227,18 @@ def test__add_shared_value():
     assert MainApp.process_shared_values["MAIN.bbb"] == 20
     assert fdwl_process["MAIN.bbb"] == 20
     
+@_cd_project_dir
+def test_addProcessSharedValue():
+    name = "MAIN"
+    config = project_config.MAIN
+    app_dir = PROJECT_DIR
+    MainApp = base_app.BaseApp(name, config, engine_config,project_config,app_dir)
+    fdwl= FolderDict_withLock(sep=".")
+    MainApp.process_shared_values = fdwl
+
+    MainApp.addProcessSharedValue("ccc",30)
+    MainApp.addProcessSharedValue("ddd",40)
+    MainApp.addProcessSharedValue("eee",50)
+    assert MainApp.process_shared_values["MAIN.ccc"] == 30
+    assert MainApp.process_shared_values["MAIN.ddd"] == 40
+    assert MainApp.process_shared_values["MAIN.eee"] == 50
