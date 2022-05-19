@@ -7,7 +7,7 @@ from ..core.value_sharing import FolderDict_withLock
 import importlib
 import os
 from collections import OrderedDict
-
+from multiprocessing.managers import SyncManager
 class BaseApp(object):
     """
     The base class of all applications in JarvisEngine.
@@ -252,3 +252,20 @@ class BaseApp(object):
         """Interface of `_add_shared_value`"""
         return self._add_shared_value(obj_name, obj,True)
 
+    def RegisterProcessSharedValues(self, sync_manager: SyncManager) -> None:
+        """Override function.
+        Register value for sharing inter `multiprocessing`.
+        You must call `super().RegisterProcessSharedValues` in your override
+        because it registers default values that all applications must share.
+        
+        Usage:
+            Please use `addProcessSharedValue` method to register a shared object.
+            The object will be stored into `self.process_shared_values`.
+            You can see other shared objects after process launched.
+            
+
+        Args:
+            - sync_manager
+                return value of `multiprocessing.Manager`.
+                Please use it for sharing values.
+        """
