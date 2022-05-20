@@ -101,7 +101,7 @@ class BaseApp(object):
 
         self.Init()
 
-    def Init(self)-> NoReturn: pass
+    def Init(self) -> None: pass
 
     @property
     def name(self) -> str:
