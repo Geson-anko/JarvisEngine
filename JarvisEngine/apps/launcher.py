@@ -32,8 +32,12 @@ class Launcher(BaseApp):
 
     """
 
-    def __init__(
-        self, name: str, config: AttrDict, 
-        engine_config: AttrDict, project_config:AttrDict
-    ) -> None:
-        super().__init__(name, config, engine_config, project_config, os.path.dirname(__file__))
+    def __init__(self, config: AttrDict, engine_config: AttrDict, project_dir:str) -> None:
+        """Initialize Launcher.
+        converts `config` to `project_config`, and sets name.
+        """
+        name = logging_tool.MAIN_LOGGER_NAME
+        project_config = to_project_config(config)
+        config = project_config[name]
+        super().__init__(name, config, engine_config, project_config, project_dir)
+
