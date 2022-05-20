@@ -52,4 +52,26 @@ def test_RegisterProcessSharedValues():
         assert fdwl["MAIN.App1.App1_1.str_value"] == "apple"
         assert fdwl["MAIN.App0.bool_value"] == True
 
-    
+def test_RegisterThreadSharedValues():
+    name = "MAIN"
+    config = project_config.MAIN
+    app_dir = PROJECT_DIR
+    with cd_project_dir():
+        MainApp = base_app.BaseApp(name, config, engine_config,project_config,app_dir)
+        fdwl= FolderDict_withLock(sep=".")
+        MainApp.set_thread_shared_values_to_all_apps(fdwl)
+        MainApp.RegisterThreadSharedValues()
+
+        assert fdwl["MAIN.App0.set_obj"] == {"number"}
+        assert fdwl["MAIN.App1.range_obj"] is None
+        assert fdwl["MAIN.App1.App1_1.tuple_obj"] is None
+        assert fdwl["MAIN.App1.App1_2.list_obj"] is None
+
+        fdwl = FolderDict_withLock(sep=".")
+        App1 = MainApp.child_apps["App1"]
+        App1.set_thread_shared_values_to_all_apps(fdwl)
+        App1.RegisterThreadSharedValues()
+        assert fdwl["MAIN.App1.range_obj"] == range(10)
+        assert fdwl["MAIN.App1.App1_1.tuple_obj"] == (True, False)
+        assert fdwl["MAIN.App1.App1_2.list_obj"] is None
+        
