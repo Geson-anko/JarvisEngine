@@ -37,6 +37,14 @@ optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [[package]]
+name = "decorator"
+version = "5.1.1"
+description = "Decorators for Humans"
+category = "dev"
+optional = false
+python-versions = ">=3.5"
+
+[[package]]
 name = "folder-dict"
 version = "0.1.2"
 description = "TThe versatile dict for Python!"
@@ -171,7 +179,7 @@ python-versions = ">=3.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "6c9a3c473d811d0f25892d1f12480b402e92578334fbb303ee51f358e2b2aced"
+content-hash = "a920542285122322f908becafdb4bafdb875a2951c3e6745ba2118a01747905b"
 
 [metadata.files]
 atomicwrites = [
@@ -189,6 +197,10 @@ attrs = [
 colorama = [
     {file = "colorama-0.4.4-py2.py3-none-any.whl", hash = "sha256:9f47eda37229f68eee03b24b9748937c7dc3868f906e8ba69fbcbdd3bc5dc3e2"},
     {file = "colorama-0.4.4.tar.gz", hash = "sha256:5941b2b48a20143d2267e95b1c2a7603ce057ee39fd88e7329b0c292aa16869b"},
+]
+decorator = [
+    {file = "decorator-5.1.1-py3-none-any.whl", hash = "sha256:b8c3f85900b9dc423225913c5aace94729fe1fa9763b38939a95226f02d37186"},
+    {file = "decorator-5.1.1.tar.gz", hash = "sha256:637996211036b6385ef91435e4fae22989472f9d571faba8927ba8253acbc330"},
 ]
 folder-dict = [
     {file = "folder_dict-0.1.2-py3-none-any.whl", hash = "sha256:0b5bf4eb099ec46e14ad477eee3f2677a84d103aca6be622a1312e2322cbeccf"},
