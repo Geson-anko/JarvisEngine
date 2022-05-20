@@ -68,7 +68,7 @@ dev = ["hypothesis"]
 
 [[package]]
 name = "logging-server"
-version = "1.0.0"
+version = "1.0.1"
 description = "The logging tool for python multiprocessing."
 category = "main"
 optional = false
@@ -79,7 +79,7 @@ develop = false
 type = "git"
 url = "https://github.com/Geson-anko/logging_server"
 reference = "main"
-resolved_reference = "1f91618fcf5f506c7084cec0faf94e9c1c592df6"
+resolved_reference = "4617e6a971c81fc4df1cad1c35cdae5f09e20382"
 
 [[package]]
 name = "packaging"
