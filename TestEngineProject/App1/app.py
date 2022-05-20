@@ -10,3 +10,7 @@ class App1(BaseApp):
         super().RegisterProcessSharedValues(sync_manager)
 
         self.addProcessSharedValue("int_value",100)
+
+    def RegisterThreadSharedValues(self) -> None:
+        super().RegisterThreadSharedValues()
+        self.addThreadSharedValue("range_obj",range(10))
