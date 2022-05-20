@@ -9,7 +9,6 @@ import os
 import sys
 from JarvisEngine.core.value_sharing import FolderDict_withLock
 import multiprocessing as mp
-from decorator import decorator
 
 PROJECT_DIR = "TestEngineProject"
 sys.path.insert(0,os.path.join(os.getcwd(),PROJECT_DIR))
@@ -27,7 +26,7 @@ def _cd_project_dir(func):
         os.chdir(PROJECT_DIR)
         func(*args,**kwds)
         os.chdir("../")
-    return decorator(cd)
+    return cd
 
 def _check_property_override(app, attr:str):
     try:
