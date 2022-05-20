@@ -9,3 +9,7 @@ class App1_1(BaseApp):
     def RegisterProcessSharedValues(self, sync_manager) -> None:
         super().RegisterProcessSharedValues(sync_manager)
         self.addProcessSharedValue("str_value", "apple")
+
+    def RegisterThreadSharedValues(self) -> None:
+        super().RegisterThreadSharedValues()
+        self.addThreadSharedValue("tuple_obj",(True,False))
