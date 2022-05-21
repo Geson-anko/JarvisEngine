@@ -3,6 +3,7 @@ from multiprocessing.sharedctypes import Synchronized, SynchronizedArray,Synchro
 from typing import *
 from folder_dict import FolderDict
 import threading
+from .name import SEP
 
 class ReadOnlyError(Exception): pass 
 
@@ -106,7 +107,7 @@ class FolderDict_withLock(FolderDict):
     from reading and writing at the same time
     """
     def __init__(
-        self, data = None, deep_copy: bool = False, *, sep: str = "/",
+        self, data = None, deep_copy: bool = False, *, sep: str = SEP,
         lock = None,
         ) -> None:
         super().__init__(data, deep_copy, sep=sep)
