@@ -52,8 +52,8 @@ def run():
     
 def main_process(config: AttrDict, engine_config:AttrDict, project_dir:str) -> NoReturn:
     """main process"""
+    mp.freeze_support()
     launcher = Launcher(config, engine_config, project_dir)
-    
     with mp.Manager() as sync_manager:
         p_sv = launcher.prepare_for_launching(sync_manager)
         launcher.launch(p_sv)
