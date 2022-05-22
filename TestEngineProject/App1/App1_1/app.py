@@ -20,3 +20,7 @@ class App1_1(BaseApp):
 
     def Start(self) -> None:
         self.logger.info("Start")
+        assert self.getProcessSharedValue("MAIN.App0.bool_value") == True
+        assert self.getProcessSharedValue("MAIN.App1.int_value") == 100
+        assert self.getProcessSharedValue("MAIN.App1.App1_1.str_value") == "apple"
+        assert self.getProcessSharedValue("MAIN.App1.App1_2.float_value") == 0.0
