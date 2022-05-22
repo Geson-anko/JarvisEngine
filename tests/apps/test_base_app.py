@@ -337,3 +337,23 @@ def test_getThreadSharedValue():
 
     assert MainApp.getThreadSharedValue("..MAIN.eee") == False
     assert App0.getThreadSharedValue("MAIN.App0.fff") == 20
+
+@_cd_project_dir
+def test_prepare_for_launching_thread_apps():
+    name = "MAIN"
+    config = project_config.MAIN
+    app_dir = PROJECT_DIR
+    MainApp = base_app.BaseApp(name, config, engine_config,project_config,app_dir)
+    MainApp.prepare_for_launching_thread_apps()
+
+    t_sv = MainApp.thread_shared_values
+    assert isinstance(t_sv, FolderDict_withLock)
+    assert t_sv["MAIN.App0.set_obj"] == {"number"}
+    assert t_sv["MAIN.App1.range_obj"] is None
+
+    App1 = MainApp.child_apps["App1"]
+    App1.prepare_for_launching_thread_apps()
+    t_sv = App1.thread_shared_values
+    assert t_sv["MAIN.App1.range_obj"] == range(10)
+    assert t_sv["MAIN.App1.App1_1.tuple_obj"] == (True, False)
+    assert t_sv["MAIN.App1.App1_2.list_obj"] is None
