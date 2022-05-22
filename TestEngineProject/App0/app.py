@@ -12,3 +12,9 @@ class App0(BaseApp):
     def RegisterThreadSharedValues(self) -> None:
         super().RegisterThreadSharedValues()
         self.addThreadSharedValue("set_obj", {"number"})
+
+    def Awake(self) -> None:
+        self.logger.info("Awake")
+        assert self.process_shared_values == None
+
+    

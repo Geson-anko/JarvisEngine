@@ -35,11 +35,18 @@ def test_launch(caplog):
         time.sleep(0.1)
         rec_tup = caplog.record_tuples
 
+        # launch
         assert ("MAIN", INFO, "launch") in rec_tup
         assert ("MAIN.App0", INFO, "launch") in rec_tup
         assert ("MAIN.App1", INFO, "launch") in rec_tup
         assert ("MAIN.App1.App1_1", INFO, "launch") in rec_tup
         assert ("MAIN.App1.App1_2", INFO, "launch") in rec_tup
         
+        # Awake
+        assert ("MAIN.App0", INFO, "Awake") in rec_tup
+        assert ("MAIN.App1", INFO, "Awake") in rec_tup
+        assert ("MAIN.App1.App1_1", INFO, "Awake") in rec_tup
+        assert ("MAIN.App1.App1_2", INFO, "Awake") in rec_tup
+
     for record in caplog.records:
         assert record.levelno < WARNING, record.message
