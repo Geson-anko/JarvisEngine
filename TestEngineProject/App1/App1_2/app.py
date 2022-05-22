@@ -31,3 +31,8 @@ class App1_2(BaseApp):
         assert self.getProcessSharedValue("MAIN.App1.shared_float").value == -10.0
         assert self.getProcessSharedValue("MAIN.App1.App1_1.shared_bool").value == True
         assert self.getProcessSharedValue("MAIN.App1.App1_2.shared_str").value == b"abc"
+
+        assert self.getThreadSharedValue("MAIN.App0.set_obj") is None
+        assert self.getThreadSharedValue("MAIN.App1.range_obj") is None
+        assert self.getThreadSharedValue("MAIN.App1.App1_1.tuple_obj") is None
+        assert self.getThreadSharedValue("MAIN.App1.App1_2.list_obj") == [1,2,3]
