@@ -324,3 +324,59 @@ class BaseApp(object):
             t_sv = FolderDict_withLock(sep=name_tools.SEP)
             self.set_thread_shared_values_to_all_apps(t_sv)
             self.RegisterThreadSharedValues()
+
+    def launch_child_apps(self) -> None:
+        """
+        launch all child thread/process applications.
+        """
+        threads: List[threading.Thread] = []
+        processes : List[mp.Process] = []
+        
+        for thread_app in self.child_thread_apps.values():
+            thread = threading.Thread(
+                target=thread_app.launch, name=thread_app.name, args=(self.process_shared_values, )
+            )
+            thread.start()
+            threads.append(thread)
+
+        for process_app in self.child_process_apps.values():
+            process = mp.Process(
+                target=process_app.launch, name=process_app.name, args=(self.process_shared_values,)
+            )
+            process.start()
+            processes.append(process)
+
+        self.threads = threads
+        self.processes = processes
+
+    def join_child_apps(self) -> None:
+        """
+        Join all child thread/processes applications until they are terminated.
+        """
+        for thread in self.threads:
+            thread.join()
+
+        for process in self.processes:
+            process.join()
+
+    def _launch(self, process_shared_values:FolderDict_withLock) -> None:
+        """
+        Launch all applications as other threads or processes.
+        """
+        self.logger.info("launch")
+        self.process_shared_values = process_shared_values
+        self.prepare_for_launching_thread_apps()
+        self.launch_child_apps()
+
+        self.join_child_apps()
+
+    def launch(self, process_shared_values:FolderDict_withLock) -> None:
+        """
+        Wrapps `self._launch` by try-except error catching.
+        """
+        try:
+            self._launch(process_shared_values)
+        except Exception as e:
+            self.logger.exception(e)
+        
+
