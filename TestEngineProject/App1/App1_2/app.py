@@ -16,3 +16,6 @@ class App1_2(BaseApp):
     def Awake(self) -> None:
         self.logger.info("Awake")
         assert self.process_shared_values == None
+
+    def Start(self) -> None:
+        self.logger.info("Start")
