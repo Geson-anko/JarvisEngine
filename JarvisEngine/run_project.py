@@ -5,6 +5,10 @@ from attr_dict import AttrDict
 from .constants import DEFAULT_ENGINE_CONFIG_FILE
 from typing import *
 import sys
+from .apps import Launcher
+import multiprocessing as mp
+
+logger = logging_tool.getLogger(logging_tool.MAIN_LOGGER_NAME)
 
 def run():
     """runs JE project."""
@@ -34,16 +38,25 @@ def run():
 
     # logging
     logging_tool.setRootLoggerComponents(engine_config.logging)
-    logger = logging_tool.getLogger(logging_tool.MAIN_LOGGER_NAME)
     
+    ### starting logging server
+    logging_server = logging_tool.getLoggingServer(engine_config.logging)
+    logging_server.start()
     try:
         logger.info("JarvisEngine launch.")
         main_process(config, engine_config, project_dir)
     except BaseException as e:
         logger.exception(e)
-    
+    logging_server.shutdown()
     logger.info("JarvisEngine shutdown.")
     
     
 def main_process(config: AttrDict, engine_config:AttrDict, project_dir:str) -> NoReturn:
     """main process"""
+    launcher = Launcher(config, engine_config, project_dir)
+    
+    with mp.Manager() as sync_manager:
+        p_sv = launcher.prepare_for_launching(sync_manager)
+        launcher.launch(p_sv)
+
+        launcher.join()
