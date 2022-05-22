@@ -48,5 +48,11 @@ def test_launch(caplog):
         assert ("MAIN.App1.App1_1", INFO, "Awake") in rec_tup
         assert ("MAIN.App1.App1_2", INFO, "Awake") in rec_tup
 
+        # Start
+        assert ("MAIN.App0", INFO, "Start") in rec_tup
+        assert ("MAIN.App1", INFO, "Start") in rec_tup
+        assert ("MAIN.App1.App1_1", INFO, "Start") in rec_tup
+        assert ("MAIN.App1.App1_2", INFO, "Start") in rec_tup
+
     for record in caplog.records:
         assert record.levelno < WARNING, record.message
