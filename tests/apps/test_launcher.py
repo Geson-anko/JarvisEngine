@@ -20,7 +20,7 @@ def test_to_project_config():
     assert launcher_conf.path == "JarvisEngine.apps.Launcher"
     mod, app = launcher_conf.path.rsplit(".",1)
     assert getattr(importlib.import_module(mod), app) == launcher.Launcher
-    assert launcher_conf.thread == True
+    assert launcher_conf.thread == False
     assert isinstance(launcher_conf.apps, AttrDict)
     assert launcher_conf.apps == config
 
