@@ -8,6 +8,8 @@ import importlib
 import os
 from collections import OrderedDict
 from multiprocessing.managers import SyncManager
+import multiprocessing as mp
+import threading
 class BaseApp(object):
     """
     The base class of all applications in JarvisEngine.
@@ -312,3 +314,13 @@ class BaseApp(object):
     def getThreadSharedValue(self, name:str) -> Any:
         """Interface of `_get_shared_value(...,for_thread=True)`"""
         return self._get_shared_value(name, True)
+
+    def prepare_for_launching_thread_apps(self):
+        """ 
+        Prepare for launching thread applcations.
+        Set thread shared values among self and child thread apps.
+        """
+        if not self.is_thread: # Only *head* of threads.
+            t_sv = FolderDict_withLock(sep=name_tools.SEP)
+            self.set_thread_shared_values_to_all_apps(t_sv)
+            self.RegisterThreadSharedValues()
