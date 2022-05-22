@@ -1,5 +1,5 @@
 from JarvisEngine.apps import BaseApp
-
+import multiprocessing as mp
 class App0(BaseApp):
     
     def Init(self) -> None:
@@ -8,6 +8,7 @@ class App0(BaseApp):
     def RegisterProcessSharedValues(self, sync_manager) -> None:
         super().RegisterProcessSharedValues(sync_manager)
         self.addProcessSharedValue("bool_value",True)
+        self.addProcessSharedValue("shared_int",mp.Value("i",0))
 
     def RegisterThreadSharedValues(self) -> None:
         super().RegisterThreadSharedValues()
@@ -23,3 +24,8 @@ class App0(BaseApp):
         assert self.getProcessSharedValue("MAIN.App1.int_value") == 100
         assert self.getProcessSharedValue("MAIN.App1.App1_1.str_value") == "apple"
         assert self.getProcessSharedValue("MAIN.App1.App1_2.float_value") == 0.0
+
+        assert self.getProcessSharedValue("MAIN.App0.shared_int").value == 0
+        assert self.getProcessSharedValue("MAIN.App1.shared_float").value == -10.0
+        assert self.getProcessSharedValue("MAIN.App1.App1_1.shared_bool").value == True
+        assert self.getProcessSharedValue("MAIN.App1.App1_2.shared_str").value == b"abc"
