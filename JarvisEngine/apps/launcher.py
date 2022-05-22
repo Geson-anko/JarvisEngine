@@ -24,7 +24,7 @@ def to_project_config(config:AttrDict) -> AttrDict:
     pconf_dict = {
         logging_tool.MAIN_LOGGER_NAME:{
             "path": "JarvisEngine.apps.Launcher",
-            "thread": True,
+            "thread": False,
             "apps": config
         }
     }
