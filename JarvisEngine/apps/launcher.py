@@ -5,6 +5,7 @@ from ..core import logging_tool ,name as name_tools
 from ..core.value_sharing import FolderDict_withLock
 import multiprocessing as mp
 from multiprocessing.managers import SyncManager
+import threading
 
 
 def to_project_config(config:AttrDict) -> AttrDict:
@@ -55,3 +56,14 @@ class Launcher(BaseApp):
         self.RegisterProcessSharedValues(sync_manager)
         self.set_process_shared_values_to_all_apps(None)
         return p_sv
+
+    def launch(self, process_shared_values: FolderDict_withLock) -> None:
+        """Launches all application processes/threads in background."""
+        self.launcher_thread = threading.Thread(
+            target=super().launch, name=self.name, args=(process_shared_values,)
+        )
+        self.launcher_thread.start()
+
+    def join(self):
+        """Joins all application threads/processes."""
+        self.launcher_thread.join()
