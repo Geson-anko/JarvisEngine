@@ -57,6 +57,8 @@ class BaseApp(object):
     Override methods
     - Init()  
         called at end of `__init__`
+    - Awake()
+        Called at the begin of process/thread.
     """
 
 
@@ -364,6 +366,8 @@ class BaseApp(object):
         Launch all applications as other threads or processes.
         """
         self.logger.info("launch")
+        self.Awake()
+
         self.process_shared_values = process_shared_values
         self.prepare_for_launching_thread_apps()
         self.launch_child_apps()
@@ -380,3 +384,5 @@ class BaseApp(object):
             self.logger.exception(e)
         
 
+    def Awake(self) -> None:
+        """Called at begin of process/thread."""
