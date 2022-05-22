@@ -59,6 +59,8 @@ class BaseApp(object):
         called at end of `__init__`
     - Awake()
         Called at the begin of process/thread.
+    - Start()
+        Called at all applications are launched.
     """
 
 
@@ -371,6 +373,8 @@ class BaseApp(object):
         self.process_shared_values = process_shared_values
         self.prepare_for_launching_thread_apps()
         self.launch_child_apps()
+        
+        self.Start()
 
         self.join_child_apps()
 
@@ -386,3 +390,6 @@ class BaseApp(object):
 
     def Awake(self) -> None:
         """Called at begin of process/thread."""
+
+    def Start(self) -> None:
+        """Called at all applications are launched."""
