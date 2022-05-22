@@ -317,7 +317,7 @@ class BaseApp(object):
 
     def prepare_for_launching_thread_apps(self):
         """ 
-        Prepare for launching thread applcations.
+        Prepare for launching thread applications.
         Set thread shared values among self and child thread apps.
         """
         if not self.is_thread: # Only *head* of threads.
