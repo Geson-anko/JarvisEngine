@@ -41,6 +41,11 @@ def run():
     ### starting logging server
     logging_server = logging_tool.getLoggingServer(engine_config.logging)
     logging_server.start()
+
+    # set process spawn method
+    start_method = engine_config.multiprocessing.start_method
+    mp.set_start_method(start_method)
+
     try:
         logger.info("JarvisEngine launch.")
         main_process(config, engine_config, project_dir)
