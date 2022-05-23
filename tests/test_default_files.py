@@ -9,3 +9,7 @@ def test_default_engine_config():
     assert log_conf["port"] == 8316
     assert log_conf["message_format"] == "%(asctime)s.%(msecs)03d %(name)s [%(levelname)s]: %(message)s"
     assert log_conf["date_format"] == "%Y/%m/%d %H:%M:%S"
+
+    assert "multiprocessing" in conf
+    mp_conf = conf["multiprocessing"]
+    assert mp_conf["start_method"] == "spawn"
