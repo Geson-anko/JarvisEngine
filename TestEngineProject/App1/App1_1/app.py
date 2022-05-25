@@ -36,4 +36,7 @@ class App1_1(BaseApp):
         assert self.getThreadSharedValue("MAIN.App1.range_obj") == range(10)
         assert self.getThreadSharedValue("MAIN.App1.App1_1.tuple_obj") == (True, False)
         assert self.getThreadSharedValue("MAIN.App1.App1_2.list_obj") is None
-    
+
+    frame_rate = 10
+    def Update(self, delta_time: float) -> None:
+        self.logger.info("Update")
