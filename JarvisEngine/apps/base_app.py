@@ -11,6 +11,7 @@ from multiprocessing.managers import SyncManager
 import multiprocessing as mp
 import threading
 import time
+from ..constants import SHUTDOWN_NAME
 
 class BaseApp(object):
     """
@@ -55,6 +56,16 @@ class BaseApp(object):
 
     - child_app_configs
         `apps` attribute of `self.config`.
+
+    - frame_rate: float
+        Period to call the `Update` method.
+        The behavior depends on the value range.
+        - frame_rate > 0.0
+            Call `Update` method with that frame_rate
+        - frame_rate == 0.0
+            Call `Update` once and terminate immediately.
+        - frame_rate < 0.0
+            Call next `Update` immediately.
     
     Override methods
     - Init()  
@@ -63,6 +74,8 @@ class BaseApp(object):
         Called at the begin of process/thread.
     - Start()
         Called at all applications are launched.
+    - Update(delta_time)
+        Called at intervals determined by `frame_rate` attribute.
     """
 
 
@@ -378,6 +391,8 @@ class BaseApp(object):
         
         self.Start()
 
+        self.periodic_update()
+
         self.join_child_apps()
 
     def launch(self, process_shared_values:FolderDict_withLock) -> None:
@@ -410,3 +425,24 @@ class BaseApp(object):
             time.sleep(wait_time)
         self.__start_time = time.time()
 
+    def periodic_update(self):
+        shutdown = self.getProcessSharedValue(SHUTDOWN_NAME)
+        self.logger.debug("periodic update")
+        previous_time = time.time()
+        while not shutdown.value:
+            current_time = time.time()
+            self.Update(current_time - previous_time)
+            previous_time = current_time
+
+            if self.frame_rate == 0.0:
+                # call `Update` once only when frame_rate is 0.
+                break
+            elif self.frame_rate > 0.0:
+                self.adjust_update_frame_rate()
+            else:
+                # If the frame_rate is negative value,
+                # the next `Update` method is called immediately.
+                pass
+
+    def Update(self, delta_time:float) -> None:
+        """Called at intervals determined by `frame_rate` attribute."""
