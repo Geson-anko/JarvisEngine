@@ -426,6 +426,10 @@ class BaseApp(object):
         self.__start_time = time.time()
 
     def periodic_update(self):
+        """
+        Calls override method `Update` at intervals determined by
+        `frame_rate`, until shutdown.
+        """
         shutdown = self.getProcessSharedValue(SHUTDOWN_NAME)
         self.logger.debug("periodic update")
         previous_time = time.time()
