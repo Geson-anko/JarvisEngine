@@ -445,4 +445,9 @@ class BaseApp(object):
                 pass
 
     def Update(self, delta_time:float) -> None:
-        """Called at intervals determined by `frame_rate` attribute."""
+        """
+        Called at intervals determined by `frame_rate` attribute.
+        Args:
+        - delta_time: float
+            The interval time[seconds] of previous Update. 
+        """
