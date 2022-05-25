@@ -9,6 +9,7 @@ import os
 import sys
 from JarvisEngine.core.value_sharing import FolderDict_withLock
 import multiprocessing as mp
+import timeit
 
 PROJECT_DIR = "TestEngineProject"
 sys.path.insert(0,os.path.join(os.getcwd(),PROJECT_DIR))
@@ -357,3 +358,17 @@ def test_prepare_for_launching_thread_apps():
     assert t_sv["MAIN.App1.range_obj"] == range(10)
     assert t_sv["MAIN.App1.App1_1.tuple_obj"] == (True, False)
     assert t_sv["MAIN.App1.App1_2.list_obj"] is None
+
+@_cd_project_dir
+def test_adjust_frame_rate():
+    name = "MAIN"
+    config = project_config.MAIN
+    app_dir = PROJECT_DIR
+    MainApp = base_app.BaseApp(name, config, engine_config,project_config,app_dir)
+
+    assert MainApp.frame_rate == 0.0
+    assert MainApp._update_start_time == float("-inf")
+
+    MainApp.frame_rate = 10
+    MainApp.adjust_update_frame_rate()
+    assert 9 < 1/timeit.timeit("MainApp.adjust_update_frame_rate()",globals=locals(), number=5) * 5 < 11
