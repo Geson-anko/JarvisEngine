@@ -2,13 +2,15 @@ from JarvisEngine.apps.base_app import BaseApp
 
 # prepare 
 import time
+from JarvisEngine.run_project import create_shutdown
 from JarvisEngine.core.logging_tool import getLoggingServer
 from JarvisEngine.core.value_sharing import FolderDict_withLock
 from JarvisEngine.apps.launcher import Launcher
+from JarvisEngine.constants import SHUTDOWN_NAME
 from .test_base_app import (
     project_config, engine_config,PROJECT_DIR
 )
-from logging import INFO, WARNING
+from logging import DEBUG, INFO, WARNING
 import os
 import copy
 import multiprocessing as mp
@@ -29,9 +31,16 @@ def test_launch(caplog):
     config = project_config.MAIN
     app_dir = PROJECT_DIR
     with cd_project_dir(), mp.Manager() as sync_manager:
-        MainApp = BaseApp(name, config, engine_config, project_config,app_dir)
-        p_sv = Launcher.prepare_for_launching(MainApp, sync_manager)
-        MainApp.launch(p_sv)
+        #MainApp = BaseApp(name, config, engine_config, project_config,app_dir)        
+        #p_sv = Launcher.prepare_for_launching(MainApp, sync_manager)
+        #MainApp.launch(p_sv)
+        LauncherApp = Launcher(config.apps,engine_config,app_dir)
+        p_sv = LauncherApp.prepare_for_launching(sync_manager)
+        shutdown = create_shutdown(p_sv)
+        LauncherApp.launch(p_sv)
+        time.sleep(1.0)
+        shutdown.value = True
+        LauncherApp.join()
         time.sleep(0.1)
         rec_tup = caplog.record_tuples
 
@@ -53,6 +62,29 @@ def test_launch(caplog):
         assert ("MAIN.App1", INFO, "Start") in rec_tup
         assert ("MAIN.App1.App1_1", INFO, "Start") in rec_tup
         assert ("MAIN.App1.App1_2", INFO, "Start") in rec_tup
+
+        # periodic_update
+        assert ("MAIN", DEBUG, "periodic update") in rec_tup
+        assert ("MAIN.App0", DEBUG, "periodic update") in rec_tup
+        assert ("MAIN.App1", DEBUG, "periodic update") in rec_tup
+        assert ("MAIN.App1.App1_1", DEBUG, "periodic update") in rec_tup
+        assert ("MAIN.App1.App1_2", DEBUG, "periodic update") in rec_tup
+
+        # Update
+        ### called only once.
+        assert ("MAIN.App0", INFO, "Update") in rec_tup
+        assert rec_tup.count(("MAIN.App0", INFO, "Update")) == 1
+
+        ### updating in 5 fps.
+        assert ("MAIN.App1", INFO, "Update") in rec_tup
+        assert 7 > rec_tup.count(("MAIN.App1", INFO, "Update")) > 4
+
+        ### updating in 10 fps.
+        assert ("MAIN.App1.App1_1", INFO, "Update") in rec_tup
+        assert 12 > rec_tup.count(("MAIN.App1.App1_1", INFO, "Update")) > 9
+
+        ### updating in infinity fps. so not logged.
+        assert not ("MAIN.App1.App1_2",INFO, "Update") in rec_tup
 
     for record in caplog.records:
         assert record.levelno < WARNING, record.message
