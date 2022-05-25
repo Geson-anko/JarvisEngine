@@ -10,6 +10,8 @@ from collections import OrderedDict
 from multiprocessing.managers import SyncManager
 import multiprocessing as mp
 import threading
+import time
+
 class BaseApp(object):
     """
     The base class of all applications in JarvisEngine.
@@ -393,3 +395,18 @@ class BaseApp(object):
 
     def Start(self) -> None:
         """Called at all applications are launched."""
+
+    frame_rate = 0.0
+    __start_time = float("-inf")
+
+    @property
+    def _update_start_time(self) -> float:
+        return self.__start_time
+
+    def adjust_update_frame_rate(self):
+        """Adjusting frame rate of `Update` call."""
+        wait_time = 1/self.frame_rate - (time.time() - self.__start_time)
+        if wait_time > 0:
+            time.sleep(wait_time)
+        self.__start_time = time.time()
+
