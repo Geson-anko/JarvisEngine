@@ -43,3 +43,6 @@ class App1_1(BaseApp):
 
     def End(self) -> None:
         self.logger.info("End")
+
+    def Terminate(self) -> None:
+        self.logger.info("Terminate.")
