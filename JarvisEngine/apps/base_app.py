@@ -78,6 +78,10 @@ class BaseApp(object):
         Called at intervals determined by `frame_rate` attribute.
     - End()
         Called at the end of process/thread.
+    - Terminate()
+        Called before the app terminate.
+        If child applications could not be terminated,
+        this method is never called.
     """
 
 
@@ -399,6 +403,9 @@ class BaseApp(object):
 
         self.join_child_apps()
 
+        self.Terminate()
+        self.logger.debug("terminate")
+
     def launch(self, process_shared_values:FolderDict_withLock) -> None:
         """
         Wrapps `self._launch` by try-except error catching.
@@ -462,3 +469,10 @@ class BaseApp(object):
 
     def End(self) -> None:
         """Called at the end of process/thread."""
+
+    def Terminate(self) -> None:
+        """
+        Called before the app terminate.
+        If child applications could not be terminated,
+        this method is never called.
+        """

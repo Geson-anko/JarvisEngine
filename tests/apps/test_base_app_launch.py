@@ -92,5 +92,18 @@ def test_launch(caplog):
         assert ("MAIN.App1.App1_1", INFO, "End") in rec_tup
         assert ("MAIN.App1.App1_2", INFO, "End") in rec_tup
 
+        # Terminate (override method)
+        assert ("MAIN.App0", INFO, "Terminate.") in rec_tup
+        assert ("MAIN.App1", INFO, "Terminate.") in rec_tup
+        assert ("MAIN.App1.App1_1", INFO, "Terminate.") in rec_tup
+        assert ("MAIN.App1.App1_2", INFO, "Terminate.") in rec_tup
+
+        # terminate
+        assert("MAIN", DEBUG, "terminate") in rec_tup
+        assert("MAIN.App0", DEBUG, "terminate") in rec_tup
+        assert("MAIN.App1", DEBUG, "terminate") in rec_tup
+        assert("MAIN.App1.App1_1", DEBUG, "terminate") in rec_tup
+        assert("MAIN.App1.App1_2", DEBUG, "terminate") in rec_tup
+
     for record in caplog.records:
         assert record.levelno < WARNING, record.message
