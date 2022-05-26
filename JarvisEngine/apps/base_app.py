@@ -76,6 +76,8 @@ class BaseApp(object):
         Called at all applications are launched.
     - Update(delta_time)
         Called at intervals determined by `frame_rate` attribute.
+    - End()
+        Called at the end of process/thread.
     """
 
 
@@ -393,6 +395,8 @@ class BaseApp(object):
 
         self.periodic_update()
 
+        self.End()
+
         self.join_child_apps()
 
     def launch(self, process_shared_values:FolderDict_withLock) -> None:
@@ -455,3 +459,6 @@ class BaseApp(object):
         - delta_time: float
             The interval time[seconds] of previous Update. 
         """
+
+    def End(self) -> None:
+        """Called at the end of process/thread."""
