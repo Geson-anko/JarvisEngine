@@ -44,3 +44,6 @@ class App1(BaseApp):
         self.logger.info("Updating : {:.2f} fps".format(1/delta_time))
         assert self.frame_rate - 1 < 1/delta_time 
         return super().Update(delta_time)
+
+    def End(self) -> None:
+        self.logger.info("End")

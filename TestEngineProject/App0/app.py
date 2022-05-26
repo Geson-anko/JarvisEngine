@@ -38,3 +38,6 @@ class App0(BaseApp):
     frame_rate = 0.0
     def Update(self, delta_time: float) -> None:
         self.logger.info("Update")
+
+    def End(self) -> None:
+        self.logger.info("End")
