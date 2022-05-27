@@ -13,3 +13,10 @@ def test_default_engine_config():
     assert "multiprocessing" in conf
     mp_conf = conf["multiprocessing"]
     assert mp_conf["start_method"] == "spawn"
+
+    assert "commands" in conf
+    cmd_conf = conf["commands"]
+
+    assert "keyboard" in cmd_conf
+    cmd_key_conf = cmd_conf["keyboard"]
+    assert cmd_key_conf["shutdown"] == "<ctrl>+<shift>+q"
