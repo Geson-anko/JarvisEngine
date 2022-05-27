@@ -77,11 +77,11 @@ def test_launch(caplog):
 
         ### updating in 5 fps.
         assert ("MAIN.App1", INFO, "Update") in rec_tup
-        assert 7 > rec_tup.count(("MAIN.App1", INFO, "Update")) > 4
+        assert 6 >= rec_tup.count(("MAIN.App1", INFO, "Update")) >= 4 
 
         ### updating in 10 fps.
         assert ("MAIN.App1.App1_1", INFO, "Update") in rec_tup
-        assert 12 > rec_tup.count(("MAIN.App1.App1_1", INFO, "Update")) > 9
+        assert 11 >= rec_tup.count(("MAIN.App1.App1_1", INFO, "Update")) >= 9
 
         ### updating in infinity fps. so not logged.
         assert not ("MAIN.App1.App1_2",INFO, "Update") in rec_tup
