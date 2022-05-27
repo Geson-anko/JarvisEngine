@@ -444,6 +444,7 @@ class BaseApp(object):
         shutdown = self.getProcessSharedValue(SHUTDOWN_NAME)
         self.logger.debug("periodic update")
         previous_time = time.time()
+        self.__start_time = previous_time
         while not shutdown.value:
             current_time = time.time()
             self.Update(current_time - previous_time)
