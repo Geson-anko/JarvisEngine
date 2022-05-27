@@ -10,6 +10,8 @@ import multiprocessing as mp
 from multiprocessing.sharedctypes import Synchronized
 from .core.value_sharing import make_readonly, FolderDict_withLock
 import ctypes
+from pynput import keyboard
+import time
 
 logger = logging_tool.getLogger(logging_tool.MAIN_LOGGER_NAME)
 
@@ -64,8 +66,9 @@ def main_process(config: AttrDict, engine_config:AttrDict, project_dir:str) -> N
     launcher = Launcher(config, engine_config, project_dir)
     with mp.Manager() as sync_manager:
         p_sv = launcher.prepare_for_launching(sync_manager)
+        shutdown = create_shutdown(p_sv)
         launcher.launch(p_sv)
-
+        wait_for_QuitKeyboardCommand(shutdown,engine_config.commands.keyboard)
         launcher.join()
 
 def create_shutdown(process_shared_values:FolderDict_withLock) -> Synchronized:
@@ -78,3 +81,26 @@ def create_shutdown(process_shared_values:FolderDict_withLock) -> Synchronized:
     shutdown_read_only = make_readonly(shutdown)
     process_shared_values[SHUTDOWN_NAME] = shutdown_read_only
     return shutdown
+
+def wait_for_QuitKeyboardCommand(shutdown:Synchronized, keyboard_command_config:AttrDict) -> None:
+    """Waiting for quit keyboard command."""
+    def on_activate():
+        shutdown.value = True
+
+    def for_canonical(f):
+        return lambda k: f(listener.canonical(k))
+
+    quit_hot_key = keyboard_command_config.shutdown
+    hotkey = keyboard.HotKey(
+        keyboard.HotKey.parse(quit_hot_key),
+        on_activate
+    )
+
+    listener = keyboard.Listener(
+        on_press=for_canonical(hotkey.press),
+        on_release=for_canonical(hotkey.release)
+    )
+    listener.start()
+    
+    while not shutdown.value:
+        time.sleep(0.5)
