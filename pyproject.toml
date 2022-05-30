@@ -12,7 +12,6 @@ Attr-Dict = "^1.0.0"
 folder-dict = "^0.1.2"
 json5 = "^0.9.6"
 toml = "^0.10.2"
-pynput = "^1.7.6"
 
 [tool.poetry.dev-dependencies]
 
