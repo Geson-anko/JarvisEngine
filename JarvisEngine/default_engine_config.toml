@@ -6,7 +6,3 @@ date_format = "%Y/%m/%d %H:%M:%S"
 
 [multiprocessing]
 start_method = "spawn" # or "fork". If using "fork", you may face freeze problems caused by multi process threading. 
-
-[commands]
-[commands.keyboard]
-shutdown = "<ctrl>+<shift>+q" # check `pynput` hot key format.
