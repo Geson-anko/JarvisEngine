@@ -25,21 +25,21 @@ class cd_project_dir:
 
         
 def test_Init(caplog):
-    name = "MAIN"
-    config = project_config.MAIN
+    name = "Launcher"
+    config = project_config.Launcher
     app_dir = PROJECT_DIR
     with cd_project_dir():
         MainApp = base_app.BaseApp(name, config, engine_config,project_config,app_dir)
         time.sleep(0.1)
         rec_tup = caplog.record_tuples
-        assert ("MAIN.App0",INFO, "Init0") in rec_tup
-        assert ("MAIN.App1",INFO, "Init1") in rec_tup
-        assert ("MAIN.App1.App1_1",INFO, "Init1_1") in rec_tup
-        assert ("MAIN.App1.App1_2",INFO, "Init1_2") in rec_tup
+        assert ("Launcher.App0",INFO, "Init0") in rec_tup
+        assert ("Launcher.App1",INFO, "Init1") in rec_tup
+        assert ("Launcher.App1.App1_1",INFO, "Init1_1") in rec_tup
+        assert ("Launcher.App1.App1_2",INFO, "Init1_2") in rec_tup
 
 def test_RegisterProcessSharedValues():
-    name = "MAIN"
-    config = project_config.MAIN
+    name = "Launcher"
+    config = project_config.Launcher
     app_dir = PROJECT_DIR
     with mp.Manager() as shmm, cd_project_dir():
         MainApp = base_app.BaseApp(name, config, engine_config,project_config,app_dir)
@@ -47,14 +47,14 @@ def test_RegisterProcessSharedValues():
         MainApp.set_process_shared_values_to_all_apps(fdwl)
         MainApp.RegisterProcessSharedValues(shmm)
 
-        assert fdwl["MAIN.App1.int_value"] == 100
-        assert fdwl["MAIN.App1.App1_2.float_value"] == 0.0
-        assert fdwl["MAIN.App1.App1_1.str_value"] == "apple"
-        assert fdwl["MAIN.App0.bool_value"] == True
+        assert fdwl["Launcher.App1.int_value"] == 100
+        assert fdwl["Launcher.App1.App1_2.float_value"] == 0.0
+        assert fdwl["Launcher.App1.App1_1.str_value"] == "apple"
+        assert fdwl["Launcher.App0.bool_value"] == True
 
 def test_RegisterThreadSharedValues():
-    name = "MAIN"
-    config = project_config.MAIN
+    name = "Launcher"
+    config = project_config.Launcher
     app_dir = PROJECT_DIR
     with cd_project_dir():
         MainApp = base_app.BaseApp(name, config, engine_config,project_config,app_dir)
@@ -62,16 +62,16 @@ def test_RegisterThreadSharedValues():
         MainApp.set_thread_shared_values_to_all_apps(fdwl)
         MainApp.RegisterThreadSharedValues()
 
-        assert fdwl["MAIN.App0.set_obj"] == {"number"}
-        assert fdwl["MAIN.App1.range_obj"] is None
-        assert fdwl["MAIN.App1.App1_1.tuple_obj"] is None
-        assert fdwl["MAIN.App1.App1_2.list_obj"] is None
+        assert fdwl["Launcher.App0.set_obj"] == {"number"}
+        assert fdwl["Launcher.App1.range_obj"] is None
+        assert fdwl["Launcher.App1.App1_1.tuple_obj"] is None
+        assert fdwl["Launcher.App1.App1_2.list_obj"] is None
 
         fdwl = FolderDict_withLock(sep=".")
         App1 = MainApp.child_apps["App1"]
         App1.set_thread_shared_values_to_all_apps(fdwl)
         App1.RegisterThreadSharedValues()
-        assert fdwl["MAIN.App1.range_obj"] == range(10)
-        assert fdwl["MAIN.App1.App1_1.tuple_obj"] == (True, False)
-        assert fdwl["MAIN.App1.App1_2.list_obj"] is None
+        assert fdwl["Launcher.App1.range_obj"] == range(10)
+        assert fdwl["Launcher.App1.App1_1.tuple_obj"] == (True, False)
+        assert fdwl["Launcher.App1.App1_2.list_obj"] is None
         
