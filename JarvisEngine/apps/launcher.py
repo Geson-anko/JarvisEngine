@@ -1,19 +1,20 @@
 from .base_app import BaseApp, AttrDict
 from typing import *
 import os
-from ..core import logging_tool ,name as name_tools
+from ..core import name as name_tools
 from ..core.value_sharing import FolderDict_withLock
 import multiprocessing as mp
 from multiprocessing.managers import SyncManager
 import threading
 
+LAUNCHER_NAME = "Launcher"
 
 def to_project_config(config:AttrDict) -> AttrDict:
     """convert `config` to `project_config`
     `project_config` has the following structure.
     ```
     {
-        MAIN: {
+        Launcher: {
             path: "JarvisEngine.apps.Launcher",
             thread: true,
             apps: config
@@ -23,7 +24,7 @@ def to_project_config(config:AttrDict) -> AttrDict:
     ```
     """
     pconf_dict = {
-        logging_tool.MAIN_LOGGER_NAME:{
+        LAUNCHER_NAME:{
             "path": "JarvisEngine.apps.Launcher",
             "thread": False,
             "apps": config
@@ -41,7 +42,7 @@ class Launcher(BaseApp):
         """Initialize Launcher.
         converts `config` to `project_config`, and sets name.
         """
-        name = logging_tool.MAIN_LOGGER_NAME
+        name = LAUNCHER_NAME
         project_config = to_project_config(config)
         config = project_config[name]
         super().__init__(name, config, engine_config, project_config, project_dir)
