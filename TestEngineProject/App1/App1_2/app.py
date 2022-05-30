@@ -38,7 +38,12 @@ class App1_2(BaseApp):
         assert self.getThreadSharedValue("MAIN.App1.App1_2.list_obj") == [1,2,3]
 
     frame_rate = -1.0
+    log_num = 5
+    logged_num = 0
     def Update(self, delta_time: float) -> None:
+        if self.logged_num < self.log_num:
+            self.logger.info("Update")
+            self.logged_num += 1
         return super().Update(delta_time)
 
     def End(self) -> None:
