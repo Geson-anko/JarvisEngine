@@ -2,11 +2,14 @@ from .core import parsers, logging_tool
 from .core.config_tools import read_toml, read_json, dict2attr, deep_update
 import os
 from attr_dict import AttrDict
-from .constants import DEFAULT_ENGINE_CONFIG_FILE
+from .constants import DEFAULT_ENGINE_CONFIG_FILE, SHUTDOWN_NAME
 from typing import *
 import sys
 from .apps import Launcher
 import multiprocessing as mp
+from multiprocessing.sharedctypes import Synchronized
+from .core.value_sharing import make_readonly, FolderDict_withLock
+import ctypes
 
 logger = logging_tool.getLogger(logging_tool.MAIN_LOGGER_NAME)
 
@@ -61,6 +64,23 @@ def main_process(config: AttrDict, engine_config:AttrDict, project_dir:str) -> N
     launcher = Launcher(config, engine_config, project_dir)
     with mp.Manager() as sync_manager:
         p_sv = launcher.prepare_for_launching(sync_manager)
+        shutdown = create_shutdown(p_sv)
         launcher.launch(p_sv)
-
+        wait_for_EnterKey(shutdown)
         launcher.join()
+
+def create_shutdown(process_shared_values:FolderDict_withLock) -> Synchronized:
+    """
+    Creates a shutdown value and share it inter all app processes.
+    The shared shutdown value is readonly.
+    Returns pure shutdown value (writable).
+    """
+    shutdown = mp.Value(ctypes.c_bool, False)
+    shutdown_read_only = make_readonly(shutdown)
+    process_shared_values[SHUTDOWN_NAME] = shutdown_read_only
+    return shutdown
+
+def wait_for_EnterKey(shutdown: Synchronized) -> None:
+    """Waiting for pushing enter key."""
+    input()
+    shutdown.value = True

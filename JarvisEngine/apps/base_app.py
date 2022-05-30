@@ -10,6 +10,9 @@ from collections import OrderedDict
 from multiprocessing.managers import SyncManager
 import multiprocessing as mp
 import threading
+import time
+from ..constants import SHUTDOWN_NAME
+
 class BaseApp(object):
     """
     The base class of all applications in JarvisEngine.
@@ -53,6 +56,16 @@ class BaseApp(object):
 
     - child_app_configs
         `apps` attribute of `self.config`.
+
+    - frame_rate: float
+        Period to call the `Update` method.
+        The behavior depends on the value range.
+        - frame_rate > 0.0
+            Call `Update` method with that frame_rate
+        - frame_rate == 0.0
+            Call `Update` once and terminate immediately.
+        - frame_rate < 0.0
+            Call next `Update` immediately.
     
     Override methods
     - Init()  
@@ -61,6 +74,14 @@ class BaseApp(object):
         Called at the begin of process/thread.
     - Start()
         Called at all applications are launched.
+    - Update(delta_time)
+        Called at intervals determined by `frame_rate` attribute.
+    - End()
+        Called at the end of process/thread.
+    - Terminate()
+        Called before the app terminate.
+        If child applications could not be terminated,
+        this method is never called.
     """
 
 
@@ -376,7 +397,14 @@ class BaseApp(object):
         
         self.Start()
 
+        self.periodic_update()
+
+        self.End()
+
         self.join_child_apps()
+
+        self.Terminate()
+        self.logger.debug("terminate")
 
     def launch(self, process_shared_values:FolderDict_withLock) -> None:
         """
@@ -393,3 +421,59 @@ class BaseApp(object):
 
     def Start(self) -> None:
         """Called at all applications are launched."""
+
+    frame_rate = 0.0
+    __start_time = float("-inf")
+
+    @property
+    def _update_start_time(self) -> float:
+        return self.__start_time
+
+    def adjust_update_frame_rate(self):
+        """Adjusting frame rate of `Update` call."""
+        wait_time = 1/self.frame_rate - (time.time() - self.__start_time)
+        if wait_time > 0:
+            time.sleep(wait_time)
+        self.__start_time = time.time()
+
+    def periodic_update(self):
+        """
+        Calls override method `Update` at intervals determined by
+        `frame_rate`, until shutdown.
+        """
+        shutdown = self.getProcessSharedValue(SHUTDOWN_NAME)
+        self.logger.debug("periodic update")
+        previous_time = time.time()
+        self.__start_time = previous_time
+        while not shutdown.value:
+            current_time = time.time()
+            self.Update(current_time - previous_time)
+            previous_time = current_time
+
+            if self.frame_rate == 0.0:
+                # call `Update` once only when frame_rate is 0.
+                break
+            elif self.frame_rate > 0.0:
+                self.adjust_update_frame_rate()
+            else:
+                # If the frame_rate is negative value,
+                # the next `Update` method is called immediately.
+                pass
+
+    def Update(self, delta_time:float) -> None:
+        """
+        Called at intervals determined by `frame_rate` attribute.
+        Args:
+        - delta_time: float
+            The interval time[seconds] of previous Update. 
+        """
+
+    def End(self) -> None:
+        """Called at the end of process/thread."""
+
+    def Terminate(self) -> None:
+        """
+        Called before the app terminate.
+        If child applications could not be terminated,
+        this method is never called.
+        """

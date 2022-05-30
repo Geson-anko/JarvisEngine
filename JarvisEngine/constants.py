@@ -8,3 +8,6 @@ DEFAULT_ENGINE_CONFIG_FILE = os.path.join(ENGINE_PATH,"default_engine_config.tom
 
 # The default value of project config file name.
 DEFAULT_CONFIG_FILE_NAME = "config.json5"
+
+# The name of value that tells `shutdown` of JarvisEngine to all apps. 
+SHUTDOWN_NAME = "shutdown"
