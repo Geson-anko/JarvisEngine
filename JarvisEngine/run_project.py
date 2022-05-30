@@ -64,8 +64,9 @@ def main_process(config: AttrDict, engine_config:AttrDict, project_dir:str) -> N
     launcher = Launcher(config, engine_config, project_dir)
     with mp.Manager() as sync_manager:
         p_sv = launcher.prepare_for_launching(sync_manager)
+        shutdown = create_shutdown(p_sv)
         launcher.launch(p_sv)
-
+        wait_for_EnterKey(shutdown)
         launcher.join()
 
 def create_shutdown(process_shared_values:FolderDict_withLock) -> Synchronized:
@@ -78,3 +79,8 @@ def create_shutdown(process_shared_values:FolderDict_withLock) -> Synchronized:
     shutdown_read_only = make_readonly(shutdown)
     process_shared_values[SHUTDOWN_NAME] = shutdown_read_only
     return shutdown
+
+def wait_for_EnterKey(shutdown: Synchronized) -> None:
+    """Waiting for pushing enter key."""
+    input()
+    shutdown.value = True
