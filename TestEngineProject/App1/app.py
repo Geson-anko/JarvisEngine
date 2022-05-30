@@ -41,7 +41,11 @@ class App1(BaseApp):
     frame_rate = 5
     def Update(self, delta_time: float) -> None:
         self.logger.info("Update")
-        self.logger.info("Updating : {:.2f} fps".format(1/delta_time))
+        if delta_time !=0:
+            fps = 1/delta_time
+        else:
+            fps = float("inf")
+        self.logger.info("Updating : {:.2f} fps".format(fps))
         assert self.frame_rate - 1 < 1/delta_time 
         return super().Update(delta_time)
 
