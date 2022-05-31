@@ -14,6 +14,7 @@ from logging import DEBUG, INFO, WARNING
 import os
 import copy
 import multiprocessing as mp
+import threading
 
 engine_config = copy.deepcopy(engine_config)
 engine_config.logging.port = 20223
@@ -38,9 +39,33 @@ def test_launch(caplog):
         p_sv = LauncherApp.prepare_for_launching(sync_manager)
         shutdown = create_shutdown(p_sv)
         LauncherApp.launch(p_sv)
-        time.sleep(1.0)
+        time.sleep(0.1)
+
+        # launch_child_apps
+        threads, processes = LauncherApp.threads, LauncherApp.processes
+        for t in threads:
+            assert isinstance(t, threading.Thread)
+            assert not t.isDaemon()
+            # assert t.is_alive() # because App0 terminates immediately.
+
+        for p in processes:
+            assert isinstance(p, mp.Process)
+            assert p.is_alive()
+        
+        assert threads[0].name == "Launcher.App0"
+        assert processes[0].name == "Launcher.App1"        
+
+        time.sleep(0.9)
         shutdown.value = True
         LauncherApp.join()
+        
+        # join_child_apps
+        for t in threads:
+            assert not t.is_alive()
+
+        for p in processes:
+            assert not p.is_alive()
+
         time.sleep(0.1)
         rec_tup = caplog.record_tuples
 
