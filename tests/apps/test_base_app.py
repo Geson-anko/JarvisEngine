@@ -52,8 +52,8 @@ def test_import_app():
 def test__init__():
     
     # test_properties():
-    name = "MAIN.App1.App1_1"
-    config = project_config.MAIN.apps.App1
+    name = "Launcher.App1.App1_1"
+    config = project_config.Launcher.apps.App1
     app_dir = "TestEngineProject/App1/App1_1"
     app = base_app.BaseApp(name, config, engine_config, project_config, app_dir)
     assert app.name == name
@@ -71,8 +71,8 @@ def test__init__():
     _check_property_override(app, "logger")
 
     # test_set_config_attrs():
-    name = "MAIN.App1"
-    config = project_config.MAIN.apps.App1
+    name = "Launcher.App1"
+    config = project_config.Launcher.apps.App1
     app_dir = "TestEngineProject/App1"
     app = base_app.BaseApp(name, config, engine_config, project_config, app_dir)
 
@@ -80,8 +80,8 @@ def test__init__():
     assert app.is_thread == config.thread
     assert app.child_app_configs == config.apps
 
-    name = "MAIN.App0"
-    config = project_config.MAIN.apps.App0
+    name = "Launcher.App0"
+    config = project_config.Launcher.apps.App0
     app_dir = "TestEngineProject/App0"
     app = base_app.BaseApp(name, config, engine_config, project_config, app_dir)
 
@@ -90,16 +90,16 @@ def test__init__():
     assert app.child_app_configs == base_app.AttrDict()
 
     # test construct_child_apps()
-    name = "MAIN.App1"
-    config = project_config.MAIN.apps.App1
+    name = "Launcher.App1"
+    config = project_config.Launcher.apps.App1
     app_dir = os.path.join(os.getcwd(), "App1")
     app = base_app.BaseApp(name, config, engine_config, project_config, app_dir)
 
     assert "App1_1" in app.child_apps
     assert "App1_2" in app.child_apps
     App1_1, App1_2 = app.child_apps["App1_1"], app.child_apps["App1_2"]
-    assert App1_1.name == "MAIN.App1.App1_1"
-    assert App1_2.name == "MAIN.App1.App1_2"
+    assert App1_1.name == "Launcher.App1.App1_1"
+    assert App1_2.name == "Launcher.App1.App1_2"
     assert App1_1.module_name == "App1.App1_1.app.App1_1"
     assert App1_2.module_name == "App1.App1_2.app.App1_2"
     assert App1_1.is_thread == True
@@ -124,8 +124,8 @@ def test__init__():
 
 @_cd_project_dir
 def test_process_shared_values():
-    name = "MAIN"
-    config = project_config.MAIN
+    name = "Launcher"
+    config = project_config.Launcher
     app_dir = PROJECT_DIR
     MainApp = base_app.BaseApp(name, config, engine_config,project_config,app_dir)
     
@@ -151,8 +151,8 @@ def test_process_shared_values():
 
 @_cd_project_dir
 def test_set_process_shared_values_to_all_apps():
-    name = "MAIN"
-    config = project_config.MAIN
+    name = "Launcher"
+    config = project_config.Launcher
     app_dir = PROJECT_DIR
     MainApp = base_app.BaseApp(name, config, engine_config,project_config,app_dir)
     
@@ -171,8 +171,8 @@ def test_set_process_shared_values_to_all_apps():
 
 @_cd_project_dir
 def test_thread_shared_values():
-    name = "MAIN"
-    config = project_config.MAIN
+    name = "Launcher"
+    config = project_config.Launcher
     app_dir = PROJECT_DIR
     MainApp = base_app.BaseApp(name, config, engine_config,project_config,app_dir)
     
@@ -185,8 +185,8 @@ def test_thread_shared_values():
 
 @_cd_project_dir
 def test_thread_shared_values():
-    name = "MAIN"
-    config = project_config.MAIN
+    name = "Launcher"
+    config = project_config.Launcher
     app_dir = PROJECT_DIR
     MainApp = base_app.BaseApp(name, config, engine_config,project_config,app_dir)
     
@@ -209,8 +209,8 @@ def test_thread_shared_values():
 
 @_cd_project_dir
 def test__add_shared_value():
-    name = "MAIN"
-    config = project_config.MAIN
+    name = "Launcher"
+    config = project_config.Launcher
     app_dir = PROJECT_DIR
     MainApp = base_app.BaseApp(name, config, engine_config,project_config,app_dir)
     
@@ -220,19 +220,19 @@ def test__add_shared_value():
     MainApp.set_thread_shared_values_to_all_apps(fdwl_thread)
 
     MainApp._add_shared_value("aaa", 10, for_thread=True)
-    assert MainApp.thread_shared_values["MAIN.aaa"] == 10
-    assert MainApp.process_shared_values["MAIN.aaa"] is None
-    assert fdwl_thread["MAIN.aaa"] == 10
+    assert MainApp.thread_shared_values["Launcher.aaa"] == 10
+    assert MainApp.process_shared_values["Launcher.aaa"] is None
+    assert fdwl_thread["Launcher.aaa"] == 10
 
     MainApp._add_shared_value("bbb",20,for_thread=False)
-    assert MainApp.thread_shared_values["MAIN.bbb"] is None
-    assert MainApp.process_shared_values["MAIN.bbb"] == 20
-    assert fdwl_process["MAIN.bbb"] == 20
+    assert MainApp.thread_shared_values["Launcher.bbb"] is None
+    assert MainApp.process_shared_values["Launcher.bbb"] == 20
+    assert fdwl_process["Launcher.bbb"] == 20
     
 @_cd_project_dir
 def test_addProcessSharedValue():
-    name = "MAIN"
-    config = project_config.MAIN
+    name = "Launcher"
+    config = project_config.Launcher
     app_dir = PROJECT_DIR
     MainApp = base_app.BaseApp(name, config, engine_config,project_config,app_dir)
     fdwl= FolderDict_withLock(sep=".")
@@ -241,14 +241,14 @@ def test_addProcessSharedValue():
     MainApp.addProcessSharedValue("ccc",30)
     MainApp.addProcessSharedValue("ddd",40)
     MainApp.addProcessSharedValue("eee",50)
-    assert MainApp.process_shared_values["MAIN.ccc"] == 30
-    assert MainApp.process_shared_values["MAIN.ddd"] == 40
-    assert MainApp.process_shared_values["MAIN.eee"] == 50
+    assert MainApp.process_shared_values["Launcher.ccc"] == 30
+    assert MainApp.process_shared_values["Launcher.ddd"] == 40
+    assert MainApp.process_shared_values["Launcher.eee"] == 50
 
 @_cd_project_dir
 def test_addThreadSharedValue():
-    name = "MAIN"
-    config = project_config.MAIN
+    name = "Launcher"
+    config = project_config.Launcher
     app_dir = PROJECT_DIR
     MainApp = base_app.BaseApp(name, config, engine_config,project_config,app_dir)
     fdwl= FolderDict_withLock(sep=".")
@@ -258,14 +258,14 @@ def test_addThreadSharedValue():
     MainApp.addThreadSharedValue("fff",60)
     MainApp.addThreadSharedValue("ggg",70)
     MainApp.addThreadSharedValue("hhh",80)
-    assert MainApp.thread_shared_values["MAIN.fff"] == 60
-    assert MainApp.thread_shared_values["MAIN.ggg"] == 70
-    assert MainApp.thread_shared_values["MAIN.hhh"] == 80
+    assert MainApp.thread_shared_values["Launcher.fff"] == 60
+    assert MainApp.thread_shared_values["Launcher.ggg"] == 70
+    assert MainApp.thread_shared_values["Launcher.hhh"] == 80
 
 @_cd_project_dir
 def test__get_shared_value():
-    name = "MAIN"
-    config = project_config.MAIN
+    name = "Launcher"
+    config = project_config.Launcher
     app_dir = PROJECT_DIR
     MainApp = base_app.BaseApp(name, config, engine_config,project_config,app_dir)
     
@@ -287,19 +287,19 @@ def test__get_shared_value():
     MainApp.addThreadSharedValue("eee",False)
     App0.addThreadSharedValue("fff",20)
 
-    assert MainApp._get_shared_value("MAIN.aaa",False) == 10
+    assert MainApp._get_shared_value("Launcher.aaa",False) == 10
     assert MainApp._get_shared_value(".aaa",False) == 10
-    assert MainApp._get_shared_value("MAIN.App0.bbb",False) == True
+    assert MainApp._get_shared_value("Launcher.App0.bbb",False) == True
     assert App0._get_shared_value("..App1.ccc", False) == "apple"
     assert App1._get_shared_value(".App1_1.ddd",False) == 1.0
     
-    assert MainApp._get_shared_value("..MAIN.eee",True) == False
-    assert App0._get_shared_value("MAIN.App0.fff" ,True) == 20
+    assert MainApp._get_shared_value("..Launcher.eee",True) == False
+    assert App0._get_shared_value("Launcher.App0.fff" ,True) == 20
 
 @_cd_project_dir
 def test_getProcessSharedValue():
-    name = "MAIN"
-    config = project_config.MAIN
+    name = "Launcher"
+    config = project_config.Launcher
     app_dir = PROJECT_DIR
     MainApp = base_app.BaseApp(name, config, engine_config,project_config,app_dir)
     fdwl_process= FolderDict_withLock(sep=".")
@@ -315,16 +315,16 @@ def test_getProcessSharedValue():
     App1_1.addProcessSharedValue("ddd",1.0) 
 
 
-    assert MainApp.getProcessSharedValue("MAIN.aaa") == 10
+    assert MainApp.getProcessSharedValue("Launcher.aaa") == 10
     assert MainApp.getProcessSharedValue(".aaa") == 10
-    assert MainApp.getProcessSharedValue("MAIN.App0.bbb") == True
+    assert MainApp.getProcessSharedValue("Launcher.App0.bbb") == True
     assert App0.getProcessSharedValue("..App1.ccc") == "apple"
     assert App1.getProcessSharedValue(".App1_1.ddd") == 1.0
 
 @_cd_project_dir
 def test_getThreadSharedValue():
-    name = "MAIN"
-    config = project_config.MAIN
+    name = "Launcher"
+    config = project_config.Launcher
     app_dir = PROJECT_DIR
     MainApp = base_app.BaseApp(name, config, engine_config,project_config,app_dir)
     fdwl_thread= FolderDict_withLock(sep=".")
@@ -336,33 +336,33 @@ def test_getThreadSharedValue():
     MainApp.addThreadSharedValue("eee",False)
     App0.addThreadSharedValue("fff",20)
 
-    assert MainApp.getThreadSharedValue("..MAIN.eee") == False
-    assert App0.getThreadSharedValue("MAIN.App0.fff") == 20
+    assert MainApp.getThreadSharedValue("..Launcher.eee") == False
+    assert App0.getThreadSharedValue("Launcher.App0.fff") == 20
 
 @_cd_project_dir
 def test_prepare_for_launching_thread_apps():
-    name = "MAIN"
-    config = project_config.MAIN
+    name = "Launcher"
+    config = project_config.Launcher
     app_dir = PROJECT_DIR
     MainApp = base_app.BaseApp(name, config, engine_config,project_config,app_dir)
     MainApp.prepare_for_launching_thread_apps()
 
     t_sv = MainApp.thread_shared_values
     assert isinstance(t_sv, FolderDict_withLock)
-    assert t_sv["MAIN.App0.set_obj"] == {"number"}
-    assert t_sv["MAIN.App1.range_obj"] is None
+    assert t_sv["Launcher.App0.set_obj"] == {"number"}
+    assert t_sv["Launcher.App1.range_obj"] is None
 
     App1 = MainApp.child_apps["App1"]
     App1.prepare_for_launching_thread_apps()
     t_sv = App1.thread_shared_values
-    assert t_sv["MAIN.App1.range_obj"] == range(10)
-    assert t_sv["MAIN.App1.App1_1.tuple_obj"] == (True, False)
-    assert t_sv["MAIN.App1.App1_2.list_obj"] is None
+    assert t_sv["Launcher.App1.range_obj"] == range(10)
+    assert t_sv["Launcher.App1.App1_1.tuple_obj"] == (True, False)
+    assert t_sv["Launcher.App1.App1_2.list_obj"] is None
 
 @_cd_project_dir
 def test_adjust_frame_rate():
-    name = "MAIN"
-    config = project_config.MAIN
+    name = "Launcher"
+    config = project_config.Launcher
     app_dir = PROJECT_DIR
     MainApp = base_app.BaseApp(name, config, engine_config,project_config,app_dir)
 
