@@ -16,6 +16,7 @@ from ..constants import SHUTDOWN_NAME
 class BaseApp(object):
     """
     The base class of all applications in JarvisEngine.
+
     Attrs:
     - name: str
         The identical name among all applications.
@@ -60,28 +61,94 @@ class BaseApp(object):
     - frame_rate: float
         Period to call the `Update` method.
         The behavior depends on the value range.
+
         - frame_rate > 0.0
             Call `Update` method with that frame_rate
+
         - frame_rate == 0.0
             Call `Update` once and terminate immediately.
+
         - frame_rate < 0.0
             Call next `Update` immediately.
-    
-    Override methods
-    - Init()  
-        called at end of `__init__`
-    - Awake()
+
+    - process_shared_values: FolderDict_withLock | None
+        The property. Hold shard values inter `processes`.
+
+    - thread_shared_values: FolderDict_withLock | None
+        The property. Hold shared values inter `threads`.
+
+    Override methods:
+
+    - Init(self)  
+        Called at the end of `__init__`
+
+    - RegisterProcessSharedValues(self, sync_manager)
+        Register value for sharing inter `multiprocessing`.
+        Called before the start of all application processes/threads.
+        You must call `super().RegisterProcessSharedValues` in your override
+        because it calls `<child_app>.RegisterProcessSharedValues`.
+
+    - RegisterThreadSharedValues(self)
+        Register value for sharing inter `threading`.
+        Called at the begin of thread/process.
+        You must call `super().RegisterProcessSharedValues` in your override
+        because it calls `<child_app>.RegisterProcessSharedValues`.
+
+    - Awake(self)
         Called at the begin of process/thread.
-    - Start()
+
+    - Start(self)
         Called at all applications are launched.
-    - Update(delta_time)
+
+    - Update(self,delta_time)
         Called at intervals determined by `frame_rate` attribute.
-    - End()
+        Args:
+            - delta_time
+                The elapsed time from previous frame.
+    - End(self)
         Called at the end of process/thread.
-    - Terminate()
+
+    - Terminate(self)
         Called before the app terminate.
         If child applications could not be terminated,
         this method is never called.
+
+    
+    Application process flow:
+        All methods are called in the following order.
+
+    1. __init__
+        1. set_config_attrs
+        2. construct_child_apps
+            1. import_app
+        3. Init (override method)
+    
+    2. prepare_for_launching (only Launcher application.)
+        1. set_process_shared_values_to_all_apps (set FolderDict_withLock)
+        2. RegisterProcessSharedValues (override method)
+            1. addProcessSharedValue
+            2. RegisterProcessSharedValues (child applications)
+                ...
+        2. set_process_shared_values_to_all_apps (set None) 
+
+    3. launch (_launch)
+        1. Awake (override method)
+        2. setter of process_shared_value
+        3. prepare_for_launching_thread_apps
+            If process app
+                1. set_thread_shared_values_to_all_apps(FolderDict_withLock)
+                2. RegisterThreadSharedValues (override method)
+                    1. RegisterThreadSharedValues (child thread apps)
+                        ...
+        4. launch_child_apps
+        5. Start (override method)
+        6. periodic_update
+            1. Update (override method)
+            2. adjust_update_frame_rate
+            ...
+        7. End (override method)
+        8. join_child_apps
+        9. Terminate (override method)
     """
 
 
@@ -282,6 +349,7 @@ class BaseApp(object):
     def RegisterProcessSharedValues(self, sync_manager: SyncManager) -> None:
         """Override function.
         Register value for sharing inter `multiprocessing`.
+        Called before the start of all application processes/threads.
         You must call `super().RegisterProcessSharedValues` in your override
         because it calls `<child_app>.RegisterProcessSharedValues`.
         
@@ -289,7 +357,10 @@ class BaseApp(object):
             Please use `addProcessSharedValue` method to register a shared object.
             The object will be stored into `self.process_shared_values`.
             You can see other shared objects after process launched.
-
+            
+            Ex:
+            >>> value = mp.Value("i")
+            >>> self.addProcessSharedValue("int_value", value)
 
         Args:
             - sync_manager
@@ -302,6 +373,7 @@ class BaseApp(object):
     def RegisterThreadSharedValues(self) -> None:
         """Override function.
         Register value for sharing inter `threading`.
+        Called at the begin of thread/process.
         You must call `super().RegisterProcessSharedValues` in your override
         because it calls `<child_app>.RegisterProcessSharedValues`.
         
@@ -309,6 +381,9 @@ class BaseApp(object):
             Please use `addThreadSharedValue` method to register a shared object.
             The object will be stored into `self.thread_shared_values`.
             You can see other shared objects after process launched.
+
+            Ex:
+            >>> self.addThreadProcessSharedValue("everything", context)
 
         Args:
             Nothing.
