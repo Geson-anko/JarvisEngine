@@ -1,4 +1,5 @@
 import os
+import shutil
 from .core import parsers, logging_tool
 from .constants import ENGINE_PATH,DEFAULT_CONFIG_FILE_NAME
 
@@ -26,3 +27,13 @@ def make_project_folder(creating_dir:str) -> None:
         return
     else:
         os.makedirs(creating_dir)
+
+def copy_files(creating_dir:str) -> None:
+    """copy file to creating project directory."""
+
+    target_config_file_path = os.path.join(creating_dir, DEFAULT_CONFIG_FILE_NAME)
+    target_app_file_path = os.path.join(creating_dir, TEMPLATE_APP_FILE_NAME)
+
+    shutil.copyfile(TEMPLATE_CONFIG_FILE_PATH, target_config_file_path)
+    shutil.copyfile(TEMPLATE_APP_FILE_PATH, target_app_file_path)
+    
