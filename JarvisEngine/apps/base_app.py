@@ -195,7 +195,8 @@ class BaseApp(object):
 
         self.Init()
 
-    def Init(self) -> None: pass
+    def Init(self) -> None:
+        """Called at the end of `__init__`"""
 
     @property
     def name(self) -> str:
