@@ -6,6 +6,8 @@ from JarvisEngine.create_project import (
     TEMPLATE_APP_FILE_NAME
 )
 from JarvisEngine.constants import DEFAULT_CONFIG_FILE_NAME
+import sys
+from logging import INFO
 
 def test_TEMPLATE_PROJECt_PATH():
     assert os.path.isdir(TEMPLATE_PROJECT_PATH)
@@ -49,3 +51,25 @@ def test_copy_files():
     
     shutil.rmtree(creating_dir)
     assert not os.path.exists(creating_dir)
+
+def test_create(caplog):
+    caplog.set_level(0)
+    creating_dir = "_test_project"
+    prev_argv = sys.argv
+    sys.argv = f"{__file__} create -d {creating_dir}".split()
+    create_project.create()
+
+    assert os.path.isfile(os.path.join(creating_dir,DEFAULT_CONFIG_FILE_NAME))
+    assert os.path.isfile(os.path.join(creating_dir,TEMPLATE_APP_FILE_NAME))
+    rec_tup = caplog.record_tuples
+    abs_creating_dir = os.path.abspath(creating_dir)
+
+    log = ("MAIN", INFO, 
+        f"Creating template project to {abs_creating_dir}"
+    )
+    assert log in rec_tup
+
+    shutil.rmtree(creating_dir)
+    assert not os.path.exists(creating_dir)
+
+    sys.argv = prev_argv
