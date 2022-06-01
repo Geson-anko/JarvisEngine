@@ -20,3 +20,12 @@ def test_TEMPLATE_CONFIG_FILE_PATH():
     assert TEMPLATE_CONFIG_FILE_PATH == os.path.join(
         TEMPLATE_PROJECT_PATH, DEFAULT_CONFIG_FILE_NAME
     )
+
+def test_make_project_folder():
+    creating_dir = "_test_project"
+    assert not os.path.exists(creating_dir)
+    create_project.make_project_folder(creating_dir)
+    assert os.path.isdir(creating_dir)
+
+    os.rmdir(creating_dir)
+    assert not os.path.exists(creating_dir) # remove after test.
