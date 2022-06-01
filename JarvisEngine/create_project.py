@@ -15,11 +15,18 @@ TEMPLATE_APP_FILE_NAME = "app.py"
 # The absolute path to the template application file
 TEMPLATE_APP_FILE_PATH = os.path.join(TEMPLATE_PROJECT_PATH,TEMPLATE_APP_FILE_NAME)
 
-
+logger = logging_tool.getLogger(logging_tool.MAIN_LOGGER_NAME)
 
 def create():
     """create JE project."""
-    args = parsers.at_creating()
+    parser = parsers.at_creating()
+    args = parser.parse_args()
+    
+    creating_dir = args.creating_dir
+    creating_dir = os.path.abspath(creating_dir)
+    logger.info(f"Creating template project to {creating_dir}")
+    make_project_folder(creating_dir)
+    copy_files(creating_dir)
 
 def make_project_folder(creating_dir:str) -> None:
     """If creating_dir does not exist, make it to disk."""
@@ -36,4 +43,3 @@ def copy_files(creating_dir:str) -> None:
 
     shutil.copyfile(TEMPLATE_CONFIG_FILE_PATH, target_config_file_path)
     shutil.copyfile(TEMPLATE_APP_FILE_PATH, target_app_file_path)
-    
