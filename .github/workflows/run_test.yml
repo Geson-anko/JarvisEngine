@@ -1,0 +1,38 @@
+name: auto_test
+
+on:
+  pull_request:
+
+jobs:
+  run_test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9"]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install poetry
+      run: |
+        curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
+        echo "$HOME/.poetry/bin" >> $GITHUB_PATH
+    - name: Poetry Version
+      run: |
+        poetry --version
+    - name: Poetry Install Dependencies
+      run: |
+        poetry install --no-interaction
+    - name: test
+      continue-on-error: true
+      id: run_test
+      run: |
+        poetry run pytest ./tests
+    - name: test failed
+      if: steps.run_test.outcome == 'failure'
+      run: |
+        echo "test failed"
+        exit 1
