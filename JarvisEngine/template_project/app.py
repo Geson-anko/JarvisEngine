@@ -7,4 +7,4 @@ class App(BaseApp):
 
     frame_rate = 10.0
     def Update(self, delta_time: float) -> None:
-        self.logger.info(f"Updating in {self.frame_rate:.2f} fps.")
+        self.logger.info(f"Updating in {delta_time:.2f} secs.")
