@@ -58,9 +58,9 @@ JarvisEngineのインストールが完了しましたね！早速動かして�
     2022/06/02 10:30:13.340 Launcher.MyApp [INFO]: launch
     2022/06/02 10:30:13.341 Launcher.MyApp [INFO]: Started!
     2022/06/02 10:30:13.341 Launcher.MyApp [DEBUG]: periodic update
-    2022/06/02 10:30:13.341 Launcher.MyApp [INFO]: Updating in 10.00 fps.
-    2022/06/02 10:30:13.444 Launcher.MyApp [INFO]: Updating in 10.00 fps.
-    2022/06/02 10:30:13.544 Launcher.MyApp [INFO]: Updating in 10.00 fps.
+    2022/06/02 10:30:13.341 Launcher.MyApp [INFO]: Updating in 0.10 fps.
+    2022/06/02 10:30:13.444 Launcher.MyApp [INFO]: Updating in 0.10 fps.
+    2022/06/02 10:30:13.544 Launcher.MyApp [INFO]: Updating in 0.11 fps.
     ...
     ```
 
@@ -68,7 +68,7 @@ JarvisEngineのインストールが完了しましたね！早速動かして�
     - コンソールアウトプット
     ```
     ...
-    2022/06/02 10:30:13.960 Launcher.MyApp [INFO]: Updating in 10.00 fps.
+    2022/06/02 10:30:13.960 Launcher.MyApp [INFO]: Updating in 0.10 fps.
     2022/06/02 10:30:14.064 Launcher.MyApp [DEBUG]: terminate
     2022/06/02 10:30:14.065 Launcher [DEBUG]: terminate
     2022/06/02 10:30:14.075 logging_server.server [INFO]: Shutdown Logging Server...
