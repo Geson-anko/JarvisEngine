@@ -44,8 +44,8 @@ JarvisEngineのインストールが完了しましたね！早速動かして�
     └── config.json5
     ```
 
-2. プロジェクトを実行する
-    次のコマンドで先ほど作成したプロジェクトを実行します。  
+2. JarvisEngineを起動する  
+    次のコマンドでJarvisEngineを起動し、先ほど作成したプロジェクトを実行します。  
     ```sh
     python -m JarvisEngine run -d MyProject
     ```
