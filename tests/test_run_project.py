@@ -13,5 +13,5 @@ def test_create_shutdown():
 
     assert isinstance(shutdown, Synchronized)
     assert isinstance(shutdown_readonly, ReadOnlyValue)
-    assert shutdown.value == False
-    assert shutdown_readonly.value == False
+    assert shutdown.value is False
+    assert shutdown_readonly.value is False
