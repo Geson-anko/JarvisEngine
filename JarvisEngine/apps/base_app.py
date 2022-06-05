@@ -218,7 +218,7 @@ class BaseApp(object):
         return self.__project_config
 
     @property
-    def app_dir(self) -> str or None:
+    def app_dir(self) -> str:
         return self.__app_dir
 
     @property
@@ -266,7 +266,7 @@ class BaseApp(object):
                 self.child_process_apps[child_name] = child_app
 
     @staticmethod
-    def import_app(path: str) -> Tuple[BaseApp, ModuleType]:
+    def import_app(path: str) -> Tuple[type, ModuleType]:
         """import the application class.
         Args:
         - path: str
