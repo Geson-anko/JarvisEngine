@@ -1,17 +1,20 @@
-from .core import parsers, logging_tool
-from .core.config_tools import read_toml, read_json, dict2attr, deep_update
-import os
-from attr_dict import AttrDict
-from .constants import DEFAULT_ENGINE_CONFIG_FILE, SHUTDOWN_NAME
-from typing import *
-import sys
-from .apps import Launcher
-import multiprocessing as mp
-from multiprocessing.sharedctypes import Synchronized
-from .core.value_sharing import make_readonly, FolderDict_withLock
 import ctypes
+import multiprocessing as mp
+import os
+import sys
+from multiprocessing.sharedctypes import Synchronized
+from typing import *
+
+from attr_dict import AttrDict
+
+from .apps import Launcher
+from .constants import DEFAULT_ENGINE_CONFIG_FILE, SHUTDOWN_NAME
+from .core import logging_tool, parsers
+from .core.config_tools import deep_update, dict2attr, read_json, read_toml
+from .core.value_sharing import FolderDict_withLock, make_readonly
 
 logger = logging_tool.getLogger(logging_tool.MAIN_LOGGER_NAME)
+
 
 def run():
     """runs JE project."""
@@ -26,7 +29,7 @@ def run():
     # move to project directory and add it into path.
     os.chdir(project_dir)
     project_dir = os.getcwd()
-    sys.path.insert(0,project_dir)
+    sys.path.insert(0, project_dir)
 
     # load engine config file.
     engine_config = read_toml(engine_config_file)
@@ -56,9 +59,9 @@ def run():
         logger.exception(e)
     logging_server.shutdown()
     logger.info("JarvisEngine shutdown.")
-    
-    
-def main_process(config: AttrDict, engine_config:AttrDict, project_dir:str) -> NoReturn:
+
+
+def main_process(config: AttrDict, engine_config: AttrDict, project_dir: str) -> NoReturn:
     """main process"""
     mp.freeze_support()
     launcher = Launcher(config, engine_config, project_dir)
@@ -69,7 +72,8 @@ def main_process(config: AttrDict, engine_config:AttrDict, project_dir:str) -> N
         wait_for_EnterKey(shutdown)
         launcher.join()
 
-def create_shutdown(process_shared_values:FolderDict_withLock) -> Synchronized:
+
+def create_shutdown(process_shared_values: FolderDict_withLock) -> Synchronized:
     """
     Creates a shutdown value and share it inter all app processes.
     The shared shutdown value is readonly.
@@ -79,6 +83,7 @@ def create_shutdown(process_shared_values:FolderDict_withLock) -> Synchronized:
     shutdown_read_only = make_readonly(shutdown)
     process_shared_values[SHUTDOWN_NAME] = shutdown_read_only
     return shutdown
+
 
 def wait_for_EnterKey(shutdown: Synchronized) -> None:
     """Waiting for pushing enter key."""
