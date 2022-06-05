@@ -1,16 +1,18 @@
-from JarvisEngine.core import value_sharing
-from JarvisEngine.core.value_sharing import (
-    ReadOnly, ReadOnlyError, ReadOnlyValue, ReadOnlyArray, ReadOnlyString
-)
-import multiprocessing as mp
 import ctypes
+import multiprocessing as mp
 import threading
+
+from JarvisEngine.core import value_sharing
+from JarvisEngine.core.value_sharing import ReadOnly, ReadOnlyArray, ReadOnlyError, ReadOnlyString, ReadOnlyValue
+
 
 def assert_modify_value(obj: ReadOnlyValue):
     try:
         obj.value = None
         raise AssertionError
-    except ReadOnlyError: pass
+    except ReadOnlyError:
+        pass
+
 
 def assert_modify_array(obj: ReadOnlyArray):
     try:
@@ -19,7 +21,9 @@ def assert_modify_array(obj: ReadOnlyArray):
     except ReadOnlyError:
         try:
             obj[:] = None
-        except ReadOnlyError: pass
+        except ReadOnlyError:
+            pass
+
 
 def assert_modify_string(obj: ReadOnlyString):
     try:
@@ -29,8 +33,9 @@ def assert_modify_string(obj: ReadOnlyString):
         assert_modify_value(obj)
         assert_modify_array(obj)
 
+
 def test_ReadOnly():
-    value = mp.Value(ctypes.c_int,0)
+    value = mp.Value(ctypes.c_int, 0)
     ro = ReadOnly(value)
 
     assert ro._obj == value
@@ -41,7 +46,8 @@ def test_ReadOnly():
     assert ro.release == value.release
     assert repr(ro) == f"ReadOnly{repr(value)}"
     assert ro.get_type() == type(value)
-    
+
+
 def test_ReadOnlyValue():
     v0 = mp.Value(ctypes.c_bool)
     v1 = mp.Value(ctypes.c_float)
@@ -53,8 +59,9 @@ def test_ReadOnlyValue():
     assert_modify_value(ro0)
     assert_modify_value(ro1)
 
+
 def test_ReadOnlyArray():
-    a0 = mp.Array(ctypes.c_longdouble,10)
+    a0 = mp.Array(ctypes.c_longdouble, 10)
     a1 = mp.Array(ctypes.c_bool, 3)
     roa0 = ReadOnlyArray(a0)
     roa1 = ReadOnlyArray(a1)
@@ -69,20 +76,22 @@ def test_ReadOnlyArray():
     assert_modify_array(roa0)
     assert_modify_array(roa1)
 
+
 def test_ReadOnlyString():
     s0 = mp.Array(ctypes.c_char, 10)
     ros0 = ReadOnlyString(s0)
-    
+
     assert len(ros0) == 10
     assert ros0[1] == s0[1]
     assert ros0[3:10] == s0[3:10]
-    
+
     assert_modify_string(ros0)
 
+
 def test_make_readonly():
-    
+
     v = mp.Value("i")
-    a = mp.Array(ctypes.c_uint8,3)
+    a = mp.Array(ctypes.c_uint8, 3)
     s = mp.Array(ctypes.c_char, 10)
 
     rov = value_sharing.make_readonly(v)
@@ -96,20 +105,19 @@ def test_make_readonly():
     try:
         value_sharing.make_readonly(None)
         raise AssertionError
-    except ValueError: pass
+    except ValueError:
+        pass
+
 
 def test_FolderDict_withLock():
     fdwl = value_sharing.FolderDict_withLock(sep=".")
     assert isinstance(fdwl._lock, threading._CRLock)
     assert fdwl._lock == fdwl.get_lock()
-    
+
     lock = threading.RLock()
     fdwl = value_sharing.FolderDict_withLock(sep=".", lock=lock)
     assert fdwl.get_lock() == lock
 
     # Not implemented locking test because I don't know how to test it.
-    fdwl["a.b.c"] = 1 
+    fdwl["a.b.c"] = 1
     fdwl["a.b.c"]
-
-
-
