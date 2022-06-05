@@ -257,6 +257,8 @@ class App(BaseApp):
 ...
 ```
 
+Note: `process_shared_values`属性から、プロセス間で共有されている全てのオブジェクトを管理している、`FolderDict`クラスにアクセスすることができます。  
+
 Note: プロセス間でも状態が同期されるオブジェクトは`multiprocessing`モジュールなどから提供される特殊なもののみです。スレッド間で使用するようなメモリが共有されていることが前提のものは共有したとしても同期されません。
 
 
@@ -283,15 +285,74 @@ Note: `addThreadSharedValues`はのちに[オーバーライドメソッド](#�
         v = self.getThreadSharedValue("Launcher.path.to.queue")
 ...
 ```
-
+Note: Note: `thread_shared_values`属性から、プロセス間で共有されている全てのオブジェクトを管理している、`FolderDict`クラスにアクセスすることができます。      
 Note: スレッド間ではメモリが共有されているため、どんなオブジェクトでも共有可能です。  
 Note: 起動構成の中で同一のプロセス内のみで共有されます。
 
-
-## オーバーライドメソッドについて
-
 ## エンジン設定
+いくつかのカスタム可能な設定項目が存在します。全ての設定可能項目とそのデフォルト値は`JarvisEngine/default_engine_config.toml`に記述されます。
+オーバーライドしたい項目を記述し、起動時にそのファイルを指定することで任意の設定を変えられます。
+```sh
+python -m JarvisEngine run -ec engine_config.toml
+```
+### logging
+`[logging]`テーブルに記述されます。
+- host  
+`LoggingServer`を立てるホストです。`Logger`もここにログを送信します。
+
+- port  
+`LoggingServer`を立てるポートです。`Logger`もここにログを送信します。
+
+- message_format  
+ログを出力する時のメッセージフォーマットです。公式のロギングフォーマットに従います。
+
+- date_format  
+ログメッセージの中で時刻を表示する際のフォーマットです。
+
+### multiprocessing
+`[multiprocessing]`テーブルに記述されます。
+- start_method  
+マルチプロセスを開始する方法です。デフォルト値は`spawn`です。
 
 ## JarvisEngineの起動コマンド
+プロジェクトを作成する`create`コマンドと起動する`run`コマンドがあります。
+
+```sh
+python -m JarvisEngine command --args
+```
+
+### 常に存在する引数
+- `-ll`, `--log_level`  
+ログの出力レベルです。デフォルトは`DEBUG`です。  
+`DEBUG`,`INFO`,`WARNING`,`ERROR`,`CRITICAL`のどれかを指定してください。
+### create
+JarvisEngineで起動可能なテンプレートプロジェクトを生成します。
+```sh
+python -m JarvisEngine create --args
+```
+
+引数
+
+- `-d`, `--creating_dir`  
+プロジェクトを作成するディレクトリです。デフォルトは`./`です。  
+名前をここに与えることでプロジェクト名となります。
+
+### run
+JarvisEngineプロジェクトを起動します。
+```sh
+python -m JarvisEngine run --args
+```
+
+引数
+
+- `-d`, `--project_dir`    
+プロジェクトディレクトリです。デフォルト値は`./`です。  
+
+- `-c`, `--config_file`  
+アプリケーションの起動構成を記述したファイルのパスです。デフォルトは`config.json5`です。  
+
+- `-ec`, `--engine_config_file`  
+エンジンの設定を記述したファイルです。デフォルトは`JarvisEngine/default_engine_config.toml`が指定されています。
+
 
 
