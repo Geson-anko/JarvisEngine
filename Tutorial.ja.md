@@ -136,7 +136,7 @@ json5を使用している主な理由はコメントの追加と書きやすさ
 
 ## 複数のアプリケーションを起動する
 上記の[構造記述ファイル (`config.json5`)](#構造記述ファイル-(`config.json5`))
-で記した例のアプリケーションの起動構造は、次のような木構造になります。
+で記した例のアプリケーションの起動構造は、次のような木構造になります。最上位には`Launcher`アプリケーションがあり、そこから再帰的にアプリケーションが起動していきます。
 
 ```mermaid
 graph TD
@@ -164,10 +164,132 @@ graph TD
 #### **Note**  
 `fork`を利用したマルチプロセススレッドは危険で、フリーズなどの予期せぬバグに出会う可能性があります！`fork`を使用する場合はアプリケーションの起動構成を慎重に設計してください。
 ## アプリケーション間で値を共有する
+アプリケーション間で値を共有しながら処理を行うことは並列処理には必須です。しかし並列処理を構築する際に出会うタチの悪いバグはよくそこで発生します。  
+JarvisEngineでは、スレッドやプロセスの間で共有する値を**明示的に**登録し、一つのオブジェクトで管理しています。
+
+### 基本概念
+共有する時の基本的な概念は**ファイルシステム**を参考にし、そこに使われる*パス*はpythonのモジュールシステムと一致させています。次のようにアプリケーションが構成されているとしましょう。これを例に説明していきます。  
+```mermaid
+graph TD
+    L("Launcher")
+    A0("App0")
+    A1("App1")
+    A1_1("App1_1")
+    A1_2("App1_2")
+
+    L --"thread"-->A0
+    L --"process"-->A1
+    A1 --"thread"-->A1_1
+    A1 --"process"-->A1_2
+```
+### FolderDict (with Lock)
+全ての共有されたオブジェクトは`FolderDict_withLock`というクラスによって管理されます。[FolderDictの詳細仕様はFolderDictのリポジトリをご覧ください。](https://github.com/Geson-anko/folder_dict)  
+*パス*によってオブジェクトを登録することができます。JarvisEngineでセパレータは常にドット`.`です。変更することはできません。
+- Example
+```py
+fd = FolderDict(sep=".")
+fd["path.to.object"] = "instance"
+> fd["path.to"]["object"]
+--> "instance"
+```
+### パスとオブジェクトの共有
+パスはドット`.`区切りの形式であり、パス文字列の先頭にドットがなく、**絶対パス**と、先頭にいくつかのドットを持ち相対位置から参照する**相対パス**の２つの形式が存在します。  
+絶対パスはどのアプリケーションにおいても同様に使用することができますが、アプリケーションの起動構成を変更した場合は記述したパスも変更しなければなりません。また相対パスはそのアプリケーションの起動構成上の位置を基準にするため、いくつかのアプリケーションをまとめた**コンポーネント**にして、他のプロジェクトに簡単に移植することができます。  
+
+Note: 相対パスは、**パス文字列の先頭のドット数 - 1**個階層をさかのぼり、参照します。
+
+Note: 絶対パスは必ず先頭に`Launcher`が付きます。これは起動構成の中で最上位のアプリケーションが`JarvisEngine.apps.Launcher`によって起動されるためです。
+
+
+- Example  
+    `App1`が`int_value`という名前で値をプロセス間で共有する場合を考えます。
+    次のようにすることで共有できます。
+    
+    ```py
+    import multiprocessing as mp
+    class App1(BaseApp):
+    
+        def RegisterProcessSharedValues(self, sync_manager):
+            super().RegisterProcessSharedValues(sync_manager) # must call.
+            self.addProcessSharedValues("int_value",mp.Value("i"))
+    ```
+
+    そうすると`FolderDict` の中では、`Launcher.App1.int_value`という名前で管理されます。このように全てのアプリケーションでは起動構成上の位置を基準にオブジェクトを登録します。
+
+    自分自身で共有した`int_value`にアクセスする際には`<BaseApp>.getProcessSharedValues(name)`というメソッドを使用します。もちろん絶対パスと相対パスどちらでもアクセスできます。  
+    また、`App0`が`bool_value`という名前で値を共有していたとしても、絶対的に、または相対的にアクセスすることができます。
+
+    ```py
+    ... # in App1 class.
+        def Start(self):
+            # Absolute 
+            int_value = self.getProcessSharedValue("Launcher.App1.int_value")
+            bool_value = self.getProcessSharedvalue("Launcher.App0.bool_value")
+
+            # Relative
+            int_value = self.getProcessSharedValue(".int_value")
+            bool_value = self.getProcessSharedValue("..App0.bool_value")
+    ...
+    ```
+
 ### プロセス間
+
+- 登録する  
+マルチプロセス間で値を共有する場合は、BaseAppの`RegisterProcessSharedValues`メソッドをオーバーライドし、内部で`addProcessSharedValue`メソッドを用いて登録してください。
+Note: superクラスの`RegisterProcessSharedValues`を必ず呼び出してください。  
+Note: 引数の`sync_manager`は`multiprocessing.Manager`の返り値です。
+
+```py
+import multiprocessing as mp
+class App(BaseApp):
+    def RegisterProcessSharedValues(self, sync_manager):
+        super().RegisterProcessSharedValues(sync_manager)
+        v = mp.Queue()
+        self.addProcessSharedValue("queue",v)
+```
+
+- 参照する  
+`getProcessSharedValue`を用いて参照します。
+```py
+... # in App class
+    def Start(self):
+        v = self.getProcessSharedValue("Launcher.path.to.queue")
+...
+```
+
+Note: プロセス間でも状態が同期されるオブジェクトは`multiprocessing`モジュールなどから提供される特殊なもののみです。スレッド間で使用するようなメモリが共有されていることが前提のものは共有したとしても同期されません。
+
+
 ### スレッド間
+- 登録する    
+マルチスレッド間で値を共有する場合は、BaseAppの`RegisterThreadSharedValues`メソッドをオーバーライドし、内部で`addThreadSharedValue`メソッドを用いて登録してください。   
+Note: superクラスの`RegisterThreadSharedValues`を必ず呼び出してください。  
+
+```py
+class App(BaseApp):
+    def RegisterThreadSharedValues(self):
+        super().RegisterThreadSharedValues(sync_manager)
+        v = {"age": 19}
+        self.addThreadSharedValue("personal_data",v)
+```
+Note: `addThreadSharedValues`はのちに[オーバーライドメソッド](#オーバーライドメソッドについて)で説明する、`Start`メソッドや`Update`メソッド内でも呼び出すことが可能です。
+
+
+- 参照する  
+`getThreadSharedValue`を用いて参照します。
+```py
+... # in App class
+    def Start(self):
+        v = self.getThreadSharedValue("Launcher.path.to.queue")
+...
+```
+
+Note: スレッド間ではメモリが共有されているため、どんなオブジェクトでも共有可能です。  
+Note: 起動構成の中で同一のプロセス内のみで共有されます。
+
 
 ## オーバーライドメソッドについて
+
 ## エンジン設定
 
 ## JarvisEngineの起動コマンド
