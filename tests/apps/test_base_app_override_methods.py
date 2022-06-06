@@ -6,13 +6,17 @@ import os
 import time
 from logging import INFO
 
+from attr_dict import AttrDict
+
 from JarvisEngine.apps import base_app
 from JarvisEngine.core.logging_tool import getLoggingServer
 from JarvisEngine.core.value_sharing import FolderDict_withLock
 
-from .test_base_app import PROJECT_DIR, engine_config, project_config
+from .test_base_app import PROJECT_DIR
+from .test_base_app import engine_config as src_ec
+from .test_base_app import project_config
 
-engine_config = copy.deepcopy(engine_config)
+engine_config: AttrDict = copy.deepcopy(src_ec)
 engine_config.logging.port = 20222
 ls = getLoggingServer(engine_config.logging)
 ls.start()
@@ -31,7 +35,7 @@ def test_Init(caplog):
     config = project_config.Launcher
     app_dir = PROJECT_DIR
     with cd_project_dir():
-        MainApp = base_app.BaseApp(name, config, engine_config, project_config, app_dir)
+        base_app.BaseApp(name, config, engine_config, project_config, app_dir)
         time.sleep(0.1)
         rec_tup = caplog.record_tuples
         assert ("Launcher.App0", INFO, "Init0") in rec_tup
@@ -53,7 +57,7 @@ def test_RegisterProcessSharedValues():
         assert fdwl["Launcher.App1.int_value"] == 100
         assert fdwl["Launcher.App1.App1_2.float_value"] == 0.0
         assert fdwl["Launcher.App1.App1_1.str_value"] == "apple"
-        assert fdwl["Launcher.App0.bool_value"] == True
+        assert fdwl["Launcher.App0.bool_value"] is True
 
 
 def test_RegisterThreadSharedValues():
