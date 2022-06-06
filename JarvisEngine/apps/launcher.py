@@ -1,15 +1,17 @@
-from .base_app import BaseApp, AttrDict
-from typing import *
+import multiprocessing as mp
 import os
+import threading
+from multiprocessing.managers import SyncManager
+from typing import *
+
 from ..core import name as name_tools
 from ..core.value_sharing import FolderDict_withLock
-import multiprocessing as mp
-from multiprocessing.managers import SyncManager
-import threading
+from .base_app import AttrDict, BaseApp
 
 LAUNCHER_NAME = "Launcher"
 
-def to_project_config(config:AttrDict) -> AttrDict:
+
+def to_project_config(config: AttrDict) -> AttrDict:
     """convert `config` to `project_config`
     `project_config` has the following structure.
     ```
@@ -23,22 +25,15 @@ def to_project_config(config:AttrDict) -> AttrDict:
     }
     ```
     """
-    pconf_dict = {
-        LAUNCHER_NAME:{
-            "path": "JarvisEngine.apps.Launcher",
-            "thread": False,
-            "apps": config
-        }
-    }
+    pconf_dict = {LAUNCHER_NAME: {"path": "JarvisEngine.apps.Launcher", "thread": False, "apps": config}}
     project_config = AttrDict(pconf_dict)
     return project_config
 
+
 class Launcher(BaseApp):
-    """The origin of appcation processes.
+    """The origin of appcation processes."""
 
-    """
-
-    def __init__(self, config: AttrDict, engine_config: AttrDict, project_dir:str) -> None:
+    def __init__(self, config: AttrDict, engine_config: AttrDict, project_dir: str) -> None:
         """Initialize Launcher.
         converts `config` to `project_config`, and sets name.
         """
@@ -47,10 +42,10 @@ class Launcher(BaseApp):
         config = project_config[name]
         super().__init__(name, config, engine_config, project_config, project_dir)
 
-    def prepare_for_launching(self, sync_manager:SyncManager) -> FolderDict_withLock:
-        """ Prepare for launching.
+    def prepare_for_launching(self, sync_manager: SyncManager) -> FolderDict_withLock:
+        """Prepare for launching.
         Returns Process Shared Values after registering shared values,
-        and set None to Process Shared Values. 
+        and set None to Process Shared Values.
         """
         p_sv = FolderDict_withLock(sep=name_tools.SEP, lock=mp.RLock())
         self.set_process_shared_values_to_all_apps(p_sv)
@@ -60,9 +55,7 @@ class Launcher(BaseApp):
 
     def launch(self, process_shared_values: FolderDict_withLock) -> None:
         """Launches all application processes/threads in background."""
-        self.launcher_thread = threading.Thread(
-            target=super().launch, name=self.name, args=(process_shared_values,)
-        )
+        self.launcher_thread = threading.Thread(target=super().launch, name=self.name, args=(process_shared_values,))
         self.launcher_thread.start()
 
     def join(self):
