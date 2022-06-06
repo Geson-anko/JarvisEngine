@@ -1,12 +1,13 @@
 import ctypes
 import multiprocessing as mp
 import threading
+from typing import *
 
 from JarvisEngine.core import value_sharing
 from JarvisEngine.core.value_sharing import ReadOnly, ReadOnlyArray, ReadOnlyError, ReadOnlyString, ReadOnlyValue
 
 
-def assert_modify_value(obj: ReadOnlyValue):
+def assert_modify_value(obj: Union[ReadOnlyValue, ReadOnlyString]):
     try:
         obj.value = None
         raise AssertionError
@@ -14,7 +15,7 @@ def assert_modify_value(obj: ReadOnlyValue):
         pass
 
 
-def assert_modify_array(obj: ReadOnlyArray):
+def assert_modify_array(obj: Union[ReadOnlyArray, ReadOnlyString]):
     try:
         obj[0] = None
         raise AssertionError
@@ -111,7 +112,8 @@ def test_make_readonly():
 
 def test_FolderDict_withLock():
     fdwl = value_sharing.FolderDict_withLock(sep=".")
-    assert isinstance(fdwl._lock, threading._CRLock)
+    rlock_type = type(threading.RLock())
+    assert isinstance(fdwl._lock, rlock_type)
     assert fdwl._lock == fdwl.get_lock()
 
     lock = threading.RLock()
