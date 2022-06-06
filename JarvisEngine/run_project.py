@@ -32,11 +32,11 @@ def run():
     sys.path.insert(0, project_dir)
 
     # load engine config file.
-    engine_config = read_toml(engine_config_file)
-    engine_config["logging"]["log_level"] = log_level
+    user_engine_config = read_toml(engine_config_file)
+    user_engine_config["logging"]["log_level"] = log_level
     default_engine_config = read_toml(DEFAULT_ENGINE_CONFIG_FILE)
-    engine_config = deep_update(default_engine_config, engine_config)
-    engine_config = dict2attr(engine_config)
+    user_engine_config = deep_update(default_engine_config, user_engine_config)
+    engine_config = dict2attr(user_engine_config)
 
     # load config of the project.
     config = read_json(config_file)
@@ -61,7 +61,7 @@ def run():
     logger.info("JarvisEngine shutdown.")
 
 
-def main_process(config: AttrDict, engine_config: AttrDict, project_dir: str) -> NoReturn:
+def main_process(config: AttrDict, engine_config: AttrDict, project_dir: str) -> None:
     """main process"""
     mp.freeze_support()
     launcher = Launcher(config, engine_config, project_dir)
