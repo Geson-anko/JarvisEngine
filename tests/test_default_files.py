@@ -1,5 +1,6 @@
-from JarvisEngine.core import config_tools
 from JarvisEngine import constants
+from JarvisEngine.core import config_tools
+
 
 def test_default_engine_config():
     conf = config_tools.read_toml(constants.DEFAULT_ENGINE_CONFIG_FILE)
