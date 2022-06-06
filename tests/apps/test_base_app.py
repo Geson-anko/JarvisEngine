@@ -194,7 +194,7 @@ def test_thread_shared_values():
 
 
 @_cd_project_dir
-def test_set_thread_shared_values():
+def test_set_thread_shared_values_to_all_apps():
     name = "Launcher"
     config = project_config.Launcher
     app_dir = PROJECT_DIR
