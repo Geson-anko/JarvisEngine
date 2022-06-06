@@ -54,7 +54,7 @@ class ReadOnlyValue(ReadOnly):
         return self._obj.value
 
     @value.setter
-    def value(*args):
+    def value(self,*args):
         raise ReadOnlyError
 
 
@@ -72,10 +72,10 @@ class ReadOnlyArray(ReadOnly):
     def __getslice__(self, start: int, stop: int):
         return self._obj.__getslice__(start, stop)
 
-    def __setitem__(*args):
+    def __setitem__(self,*args):
         raise ReadOnlyError
 
-    def __setslice__(*args):
+    def __setslice__(self,*args):
         raise ReadOnlyError
 
 
@@ -89,7 +89,7 @@ class ReadOnlyString(ReadOnlyArray):
         return self._obj.value
 
     @value.setter
-    def value(*args):
+    def value(self,*args):
         raise ReadOnlyError
 
     @property
@@ -97,7 +97,7 @@ class ReadOnlyString(ReadOnlyArray):
         return self.raw
 
     @raw.setter
-    def raw(*args):
+    def raw(self,*args):
         raise ReadOnlyError
 
 
