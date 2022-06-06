@@ -7,6 +7,8 @@ import threading
 import time
 from logging import DEBUG, INFO, WARNING
 
+from attr_dict import AttrDict
+
 from JarvisEngine.apps.base_app import BaseApp
 from JarvisEngine.apps.launcher import Launcher
 from JarvisEngine.constants import SHUTDOWN_NAME
@@ -14,9 +16,11 @@ from JarvisEngine.core.logging_tool import getLoggingServer
 from JarvisEngine.core.value_sharing import FolderDict_withLock
 from JarvisEngine.run_project import create_shutdown
 
-from .test_base_app import PROJECT_DIR, engine_config, project_config
+from .test_base_app import PROJECT_DIR
+from .test_base_app import engine_config as src_ec
+from .test_base_app import project_config
 
-engine_config = copy.deepcopy(engine_config)
+engine_config: AttrDict = copy.deepcopy(src_ec)
 engine_config.logging.port = 20223
 ls = getLoggingServer(engine_config.logging)
 ls.start()
@@ -31,7 +35,7 @@ class cd_project_dir:
 
 
 def test_launch(caplog):
-    name = "Launcher"
+    # name = "Launcher"
     config = project_config.Launcher
     app_dir = PROJECT_DIR
     with cd_project_dir(), mp.Manager() as sync_manager:
