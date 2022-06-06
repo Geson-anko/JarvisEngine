@@ -311,6 +311,14 @@ optional = false
 python-versions = ">=3.7"
 
 [[package]]
+name = "types-toml"
+version = "0.10.7"
+description = "Typing stubs for toml"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "typing-extensions"
 version = "4.2.0"
 description = "Backported and Experimental Type Hints for Python 3.7+"
@@ -321,7 +329,7 @@ python-versions = ">=3.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "1db6106daa12babbefe37034d8dc05d599d3e7146db9e66a733a9cb0bd81279d"
+content-hash = "06c9a626d99460834a54015086e7b73f911a3e2be631fa24635020984a86b6e7"
 
 [metadata.files]
 atomicwrites = [
@@ -474,6 +482,10 @@ toml = [
 tomli = [
     {file = "tomli-2.0.1-py3-none-any.whl", hash = "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc"},
     {file = "tomli-2.0.1.tar.gz", hash = "sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f"},
+]
+types-toml = [
+    {file = "types-toml-0.10.7.tar.gz", hash = "sha256:a567fe2614b177d537ad99a661adc9bfc8c55a46f95e66370a4ed2dd171335f9"},
+    {file = "types_toml-0.10.7-py3-none-any.whl", hash = "sha256:05a8da4bfde2f1ee60e90c7071c063b461f74c63a9c3c1099470c08d6fa58615"},
 ]
 typing-extensions = [
     {file = "typing_extensions-4.2.0-py3-none-any.whl", hash = "sha256:6657594ee297170d19f67d55c05852a874e7eb634f4f753dbd667855e07c1708"},
