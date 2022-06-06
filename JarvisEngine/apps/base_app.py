@@ -1,17 +1,22 @@
 from __future__ import annotations
-from attr_dict import AttrDict
-from typing import *
-from types import * 
-from ..core import logging_tool, name as name_tools
-from ..core.value_sharing import FolderDict_withLock
+
 import importlib
-import os
-from collections import OrderedDict
-from multiprocessing.managers import SyncManager
 import multiprocessing as mp
+import os
 import threading
 import time
+from collections import OrderedDict
+from multiprocessing.managers import SyncManager
+from types import *
+from typing import *
+
+from attr_dict import AttrDict
+
 from ..constants import SHUTDOWN_NAME
+from ..core import logging_tool
+from ..core import name as name_tools
+from ..core.value_sharing import FolderDict_withLock
+
 
 class BaseApp(object):
     """
@@ -22,7 +27,7 @@ class BaseApp(object):
         The identical name among all applications.
         This is given by parent application.
 
-    - child_apps: OrderedDict  
+    - child_apps: OrderedDict
         The ordered dictionary that contains constructed child apps.
         self.child_apps["child_name"] -> child app
 
@@ -42,13 +47,13 @@ class BaseApp(object):
 
     - engine_config: AttrDict
         AttrDict of `engine_config.toml`
-    
+
     - project_config: AttrDict
         Full of `config.json5`
 
     - app_dir: str | None
         The directory to the application.
-    
+
     - module_name: str
         The import name of application.
 
@@ -79,7 +84,7 @@ class BaseApp(object):
 
     Override methods:
 
-    - Init(self)  
+    - Init(self)
         Called at the end of `__init__`
 
     - RegisterProcessSharedValues(self, sync_manager)
@@ -113,7 +118,7 @@ class BaseApp(object):
         If child applications could not be terminated,
         this method is never called.
 
-    
+
     Application process flow:
         All methods are called in the following order.
 
@@ -122,14 +127,14 @@ class BaseApp(object):
         2. construct_child_apps
             1. import_app
         3. Init (override method)
-    
+
     2. prepare_for_launching (only Launcher application.)
         1. set_process_shared_values_to_all_apps (set FolderDict_withLock)
         2. RegisterProcessSharedValues (override method)
             1. addProcessSharedValue
             2. RegisterProcessSharedValues (child applications)
                 ...
-        2. set_process_shared_values_to_all_apps (set None) 
+        2. set_process_shared_values_to_all_apps (set None)
 
     3. launch (_launch)
         1. Awake (override method)
@@ -151,15 +156,13 @@ class BaseApp(object):
         9. Terminate (override method)
     """
 
-
     def __init__(
-        self, name:str, config:AttrDict, engine_config:AttrDict, 
-        project_config:AttrDict, app_dir:str = None
+        self, name: str, config: AttrDict, engine_config: AttrDict, project_config: AttrDict, app_dir: str = None
     ) -> None:
         """Initialization of BaseApp
         Args:
         - name
-            The name of this application, is given by 
+            The name of this application, is given by
             its parent application.
 
         - config
@@ -183,12 +186,12 @@ class BaseApp(object):
             The absolute path to the application folder.
         """
         self.__name = name
-        self.__config  = config
+        self.__config = config
         self.__engine_config = engine_config
         self.__project_config = project_config
         self.__app_dir = app_dir
-        self.__logger = logging_tool.getAppLogger(name,engine_config.logging)
-        
+        self.__logger = logging_tool.getAppLogger(name, engine_config.logging)
+
         self.set_config_attrs()
 
         self.construct_child_apps()
@@ -209,13 +212,13 @@ class BaseApp(object):
     @property
     def engine_config(self) -> AttrDict:
         return self.__engine_config
-    
+
     @property
     def project_config(self) -> AttrDict:
         return self.__project_config
 
     @property
-    def app_dir(self) -> str or None:
+    def app_dir(self) -> str:
         return self.__app_dir
 
     @property
@@ -225,23 +228,23 @@ class BaseApp(object):
     def set_config_attrs(self) -> None:
         """set config attrs to self.
         - module_name: str
-            The import name of the application.            
+            The import name of the application.
         - is_thread: bool
             Whether the App is thread or process.
-        - child_app_configs: 
+        - child_app_configs:
             Child app configs of the application.
         """
-        self.module_name:str = self.config.path
-        self.is_thread:bool = self.config.thread
+        self.module_name: str = self.config.path
+        self.is_thread: bool = self.config.thread
 
         if hasattr(self.config, "apps"):
             self.child_app_configs = self.config.apps
         else:
-            self.child_app_configs = AttrDict()    
+            self.child_app_configs = AttrDict()
 
     def construct_child_apps(self):
         """Construct child applications of this.
-        you can see constructed child apps 
+        you can see constructed child apps
         by `self.child_apps` attribute.
         """
         self.child_apps = OrderedDict()
@@ -249,16 +252,13 @@ class BaseApp(object):
         self.child_process_apps = OrderedDict()
 
         for child_name, child_conf in self.child_app_configs.items():
-            ch_path:str = child_conf.path 
-            
+            ch_path: str = child_conf.path
+
             full_child_name = name_tools.join(self.name, child_name)
             app_cls, mod = self.import_app(ch_path)
             app_dir = os.path.dirname(mod.__file__)
 
-            child_app = app_cls(
-                full_child_name, child_conf,self.engine_config,
-                self.project_config, app_dir
-            )
+            child_app = app_cls(full_child_name, child_conf, self.engine_config, self.project_config, app_dir)
             self.child_apps[child_name] = child_app
             if child_app.is_thread:
                 self.child_thread_apps[child_name] = child_app
@@ -266,39 +266,39 @@ class BaseApp(object):
                 self.child_process_apps[child_name] = child_app
 
     @staticmethod
-    def import_app(path:str) -> Tuple[BaseApp, ModuleType]:
+    def import_app(path: str) -> Tuple[type, ModuleType]:
         """import the application class.
         Args:
         - path: str
             The import name of app.
             `import <path>`
-        
+
         return -> AppClass, Module
 
-        If imported class is not subclass of BaseApp, 
+        If imported class is not subclass of BaseApp,
         This method raises `ImportError`.
         """
-        mod_name, cls_name= path.rsplit(".",1)
+        mod_name, cls_name = path.rsplit(".", 1)
         mod = importlib.import_module(mod_name)
         app_cls = getattr(mod, cls_name)
-        
+
         if issubclass(app_cls, BaseApp):
             return app_cls, mod
         else:
             raise ImportError(f"{path} is not a subclass of BaseApp!")
 
-
     __process_shared_values: FolderDict_withLock = None
     __thread_shared_values: FolderDict_withLock = None
+
     @property
     def process_shared_values(self) -> FolderDict_withLock | None:
         return self.__process_shared_values
-    
+
     @process_shared_values.setter
-    def process_shared_values(self, p_sv:FolderDict_withLock) -> None:
+    def process_shared_values(self, p_sv: FolderDict_withLock) -> None:
         self.__process_shared_values = p_sv
-        
-    def set_process_shared_values_to_all_apps(self, p_sv:FolderDict_withLock) -> None:
+
+    def set_process_shared_values_to_all_apps(self, p_sv: FolderDict_withLock) -> None:
         """
         Set process shared value to `self` and `child_apps`
         Do not call if application process was started.
@@ -312,22 +312,21 @@ class BaseApp(object):
         return self.__thread_shared_values
 
     @thread_shared_values.setter
-    def thread_shared_values(self, t_sv:FolderDict_withLock) -> None:
+    def thread_shared_values(self, t_sv: FolderDict_withLock) -> None:
         """If called before process start, it will raise Error in the future."""
         self.__thread_shared_values = t_sv
-    
 
-    def set_thread_shared_values_to_all_apps(self, t_sv:FolderDict_withLock) -> None:
+    def set_thread_shared_values_to_all_apps(self, t_sv: FolderDict_withLock) -> None:
         """
         Set to `self` and `child_thread_apps`.
-        You must call after the app process was started. 
+        You must call after the app process was started.
         If called before process start, it will raise Error in the future.
         """
         self.thread_shared_values = t_sv
         for app in self.child_thread_apps.values():
             app.set_thread_shared_values_to_all_apps(t_sv)
 
-    def _add_shared_value(self, obj_name:str, obj:Any ,for_thread:bool) -> None:
+    def _add_shared_value(self, obj_name: str, obj: Any, for_thread: bool) -> None:
         """
         Add sharing object to shared_values.
         If for_thread is True, set to `thread_shared_values`,
@@ -339,13 +338,13 @@ class BaseApp(object):
         else:
             self.process_shared_values[name] = obj
 
-    def addProcessSharedValue(self, obj_name:str, obj:Any) -> None:
+    def addProcessSharedValue(self, obj_name: str, obj: Any) -> None:
         """Interface of `_add_shared_value`"""
-        return self._add_shared_value(obj_name, obj,False)
+        return self._add_shared_value(obj_name, obj, False)
 
-    def addThreadSharedValue(self, obj_name:str, obj:Any) -> None:
+    def addThreadSharedValue(self, obj_name: str, obj: Any) -> None:
         """Interface of `_add_shared_value`"""
-        return self._add_shared_value(obj_name, obj,True)
+        return self._add_shared_value(obj_name, obj, True)
 
     def RegisterProcessSharedValues(self, sync_manager: SyncManager) -> None:
         """Override function.
@@ -353,12 +352,12 @@ class BaseApp(object):
         Called before the start of all application processes/threads.
         You must call `super().RegisterProcessSharedValues` in your override
         because it calls `<child_app>.RegisterProcessSharedValues`.
-        
+
         Usage:
             Please use `addProcessSharedValue` method to register a shared object.
             The object will be stored into `self.process_shared_values`.
             You can see other shared objects after process launched.
-            
+
             Ex:
             >>> value = mp.Value("i")
             >>> self.addProcessSharedValue("int_value", value)
@@ -377,7 +376,7 @@ class BaseApp(object):
         Called at the begin of thread/process.
         You must call `super().RegisterProcessSharedValues` in your override
         because it calls `<child_app>.RegisterProcessSharedValues`.
-        
+
         Usage:
             Please use `addThreadSharedValue` method to register a shared object.
             The object will be stored into `self.thread_shared_values`.
@@ -393,7 +392,7 @@ class BaseApp(object):
         for app in self.child_thread_apps.values():
             app.RegisterThreadSharedValues()
 
-    def _get_shared_value(self, name:str, for_thread:bool) -> Any:
+    def _get_shared_value(self, name: str, for_thread: bool) -> Any:
         """
         Get shared value from `process_shared_values` or `thread_shared_values`
         by specifying a name.
@@ -402,26 +401,26 @@ class BaseApp(object):
         """
         if name_tools.count_head_sep(name) > 0:
             name = name_tools.join(self.name, name)
-        
+
         if for_thread:
             return self.thread_shared_values[name]
         else:
             return self.process_shared_values[name]
 
-    def getProcessSharedValue(self, name:str) -> Any:
+    def getProcessSharedValue(self, name: str) -> Any:
         """Interface of `_get_shared_value(...,for_thread=False)`"""
         return self._get_shared_value(name, False)
-        
-    def getThreadSharedValue(self, name:str) -> Any:
+
+    def getThreadSharedValue(self, name: str) -> Any:
         """Interface of `_get_shared_value(...,for_thread=True)`"""
         return self._get_shared_value(name, True)
 
     def prepare_for_launching_thread_apps(self):
-        """ 
+        """
         Prepare for launching thread applications.
         Set thread shared values among self and child thread apps.
         """
-        if not self.is_thread: # Only *head* of threads.
+        if not self.is_thread:  # Only *head* of threads.
             t_sv = FolderDict_withLock(sep=name_tools.SEP)
             self.set_thread_shared_values_to_all_apps(t_sv)
             self.RegisterThreadSharedValues()
@@ -431,19 +430,17 @@ class BaseApp(object):
         launch all child thread/process applications.
         """
         threads: List[threading.Thread] = []
-        processes : List[mp.Process] = []
-        
+        processes: List[mp.Process] = []
+
         for thread_app in self.child_thread_apps.values():
             thread = threading.Thread(
-                target=thread_app.launch, name=thread_app.name, args=(self.process_shared_values, )
+                target=thread_app.launch, name=thread_app.name, args=(self.process_shared_values,)
             )
             thread.start()
             threads.append(thread)
 
         for process_app in self.child_process_apps.values():
-            process = mp.Process(
-                target=process_app.launch, name=process_app.name, args=(self.process_shared_values,)
-            )
+            process = mp.Process(target=process_app.launch, name=process_app.name, args=(self.process_shared_values,))
             process.start()
             processes.append(process)
 
@@ -460,7 +457,7 @@ class BaseApp(object):
         for process in self.processes:
             process.join()
 
-    def _launch(self, process_shared_values:FolderDict_withLock) -> None:
+    def _launch(self, process_shared_values: FolderDict_withLock) -> None:
         """
         Launch all applications as other threads or processes.
         """
@@ -470,7 +467,7 @@ class BaseApp(object):
         self.process_shared_values = process_shared_values
         self.prepare_for_launching_thread_apps()
         self.launch_child_apps()
-        
+
         self.Start()
 
         self.periodic_update()
@@ -482,7 +479,7 @@ class BaseApp(object):
         self.Terminate()
         self.logger.debug("terminate")
 
-    def launch(self, process_shared_values:FolderDict_withLock) -> None:
+    def launch(self, process_shared_values: FolderDict_withLock) -> None:
         """
         Wrapps `self._launch` by try-except error catching.
         """
@@ -490,7 +487,6 @@ class BaseApp(object):
             self._launch(process_shared_values)
         except Exception as e:
             self.logger.exception(e)
-        
 
     def Awake(self) -> None:
         """Called at begin of process/thread."""
@@ -507,7 +503,7 @@ class BaseApp(object):
 
     def adjust_update_frame_rate(self):
         """Adjusting frame rate of `Update` call."""
-        wait_time = 1/self.frame_rate - (time.time() - self.__start_time)
+        wait_time = 1 / self.frame_rate - (time.time() - self.__start_time)
         if wait_time > 0:
             time.sleep(wait_time)
         self.__start_time = time.time()
@@ -536,12 +532,12 @@ class BaseApp(object):
                 # the next `Update` method is called immediately.
                 pass
 
-    def Update(self, delta_time:float) -> None:
+    def Update(self, delta_time: float) -> None:
         """
         Called at intervals determined by `frame_rate` attribute.
         Args:
         - delta_time: float
-            The interval time[seconds] of previous Update. 
+            The interval time[seconds] of previous Update.
         """
 
     def End(self) -> None:
