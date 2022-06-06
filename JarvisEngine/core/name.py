@@ -1,6 +1,7 @@
 SEP = "."
 
-def clean(name:str) -> str:
+
+def clean(name: str) -> str:
     """clean name.
     Erase all SEP's at the head and tail of name.
     Ex:
@@ -11,7 +12,7 @@ def clean(name:str) -> str:
         start = count_head_sep(name)
     else:
         start = 0
-    
+
     if name[-1] == SEP:
         end = -count_head_sep(name[::-1])
     else:
@@ -19,7 +20,8 @@ def clean(name:str) -> str:
 
     return name[start:end]
 
-def count_head_sep(name:str) -> int:
+
+def count_head_sep(name: str) -> int:
     """count number of head separator of name.
     Ex:
         "..a.b" -> 2
@@ -33,7 +35,8 @@ def count_head_sep(name:str) -> int:
             num += 1
     return num
 
-def join_relatively(name:str, another:str) -> str:
+
+def join_relatively(name: str, another: str) -> str:
     """Join another to name.
     Ex:
         join_relatively("a.b.c","..d.e") -> "a.b.d.e"
@@ -50,9 +53,10 @@ def join_relatively(name:str, another:str) -> str:
     else:
         return f"{name}{SEP}{another}"
 
-def join(name:str, *others:str) -> str:
+
+def join(name: str, *others: str) -> str:
     """join names. Supported relative join.
-    Ex: 
+    Ex:
         join("a.b.","c.d") -> "a.b.c.d"
         join("a.b.c","..d.e","...e.c") -> "a.b.e.c"
     """
