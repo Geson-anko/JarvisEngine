@@ -66,7 +66,7 @@ class ReadOnlyArray(ReadOnly):
     def __len__(self):
         return len(self._obj)
 
-    def __getitem__(self, i: int):
+    def __getitem__(self, i: Any):
         return self._obj[i]
 
     def __getslice__(self, start: int, stop: int):
