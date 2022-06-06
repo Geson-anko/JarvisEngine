@@ -109,19 +109,19 @@ def test__init__():
     assert App1_2.name == "Launcher.App1.App1_2"
     assert App1_1.module_name == "App1.App1_1.app.App1_1"
     assert App1_2.module_name == "App1.App1_2.app.App1_2"
-    assert App1_1.is_thread == True
-    assert App1_2.is_thread == False
+    assert App1_1.is_thread is True
+    assert App1_2.is_thread is False
     ### child_thread_apps
     assert "App1_1" in app.child_thread_apps
     assert "App1_2" not in app.child_thread_apps
     App1_1 = app.child_thread_apps["App1_1"]
-    assert App1_1.is_thread == True
+    assert App1_1.is_thread is True
 
     ### child_process_apps
     assert "App1_1" not in app.child_process_apps
     assert "App1_2" in app.child_process_apps
     App1_2 = app.child_process_apps["App1_2"]
-    assert App1_2.is_thread == False
+    assert App1_2.is_thread is False
 
     apps = config.apps
     assert App1_1.config == apps.App1_1
@@ -138,24 +138,24 @@ def test_process_shared_values():
     MainApp = base_app.BaseApp(name, config, engine_config, project_config, app_dir)
 
     # Initial value is None
-    assert MainApp.process_shared_values == None
+    assert MainApp.process_shared_values is None
     App0 = MainApp.child_apps["App0"]
     App1 = MainApp.child_apps["App1"]
-    assert App0.process_shared_values == None
-    assert App1.process_shared_values == None
+    assert App0.process_shared_values is None
+    assert App1.process_shared_values is None
 
     fdwl = FolderDict_withLock(sep=".")
 
     MainApp.process_shared_values = fdwl
     assert MainApp.process_shared_values is fdwl
     # Not set to child_apps.
-    assert App0.process_shared_values == None
-    assert App1.process_shared_values == None
+    assert App0.process_shared_values is None
+    assert App1.process_shared_values is None
     App1_1 = App1.child_apps["App1_1"]
     App1_2 = App1.child_apps["App1_2"]
 
-    assert App1_1.process_shared_values == None
-    assert App1_2.process_shared_values == None
+    assert App1_1.process_shared_values is None
+    assert App1_2.process_shared_values is None
 
 
 @_cd_project_dir
@@ -187,14 +187,14 @@ def test_thread_shared_values():
     MainApp = base_app.BaseApp(name, config, engine_config, project_config, app_dir)
 
     # Initial values is None
-    assert MainApp.thread_shared_values == None
+    assert MainApp.thread_shared_values is None
     fdwl = FolderDict_withLock(sep=".")
     MainApp.thread_shared_values = fdwl
     assert MainApp.thread_shared_values is fdwl
 
 
 @_cd_project_dir
-def test_thread_shared_values():
+def test_set_thread_shared_values():
     name = "Launcher"
     config = project_config.Launcher
     app_dir = PROJECT_DIR
@@ -291,7 +291,7 @@ def test__get_shared_value():
     App0 = MainApp.child_apps["App0"]
     App1 = MainApp.child_apps["App1"]
     App1_1 = App1.child_apps["App1_1"]
-    App1_2 = App1.child_apps["App1_2"]
+    # App1_2 = App1.child_apps["App1_2"]
     # Process shared value
     MainApp.addProcessSharedValue("aaa", 10)
     App0.addProcessSharedValue("bbb", True)
@@ -303,11 +303,11 @@ def test__get_shared_value():
 
     assert MainApp._get_shared_value("Launcher.aaa", False) == 10
     assert MainApp._get_shared_value(".aaa", False) == 10
-    assert MainApp._get_shared_value("Launcher.App0.bbb", False) == True
+    assert MainApp._get_shared_value("Launcher.App0.bbb", False) is True
     assert App0._get_shared_value("..App1.ccc", False) == "apple"
     assert App1._get_shared_value(".App1_1.ddd", False) == 1.0
 
-    assert MainApp._get_shared_value("..Launcher.eee", True) == False
+    assert MainApp._get_shared_value("..Launcher.eee", True) is False
     assert App0._get_shared_value("Launcher.App0.fff", True) == 20
 
 
@@ -322,7 +322,7 @@ def test_getProcessSharedValue():
     App0 = MainApp.child_apps["App0"]
     App1 = MainApp.child_apps["App1"]
     App1_1 = App1.child_apps["App1_1"]
-    App1_2 = App1.child_apps["App1_2"]
+    # App1_2 = App1.child_apps["App1_2"]
     # Process shared value
     MainApp.addProcessSharedValue("aaa", 10)
     App0.addProcessSharedValue("bbb", True)
@@ -331,7 +331,7 @@ def test_getProcessSharedValue():
 
     assert MainApp.getProcessSharedValue("Launcher.aaa") == 10
     assert MainApp.getProcessSharedValue(".aaa") == 10
-    assert MainApp.getProcessSharedValue("Launcher.App0.bbb") == True
+    assert MainApp.getProcessSharedValue("Launcher.App0.bbb") is True
     assert App0.getProcessSharedValue("..App1.ccc") == "apple"
     assert App1.getProcessSharedValue(".App1_1.ddd") == 1.0
 
@@ -351,7 +351,7 @@ def test_getThreadSharedValue():
     MainApp.addThreadSharedValue("eee", False)
     App0.addThreadSharedValue("fff", 20)
 
-    assert MainApp.getThreadSharedValue("..Launcher.eee") == False
+    assert MainApp.getThreadSharedValue("..Launcher.eee") is False
     assert App0.getThreadSharedValue("Launcher.App0.fff") == 20
 
 
