@@ -30,6 +30,8 @@ jobs:
       continue-on-error: true
       id: run_test
       run: |
+        poetry run mypy .
+        poetry run pflake8 .
         poetry run pytest ./tests
     - name: test failed
       if: steps.run_test.outcome == 'failure'
