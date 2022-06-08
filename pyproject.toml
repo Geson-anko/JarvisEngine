@@ -2,7 +2,17 @@
 name = "JarvisEngine"
 version = "0.0.0"
 description = "The AI Engine to make J.A.R.V.I.S."
+repository = "https://github.com/Geson-anko/JarvisEngine"
 authors = ["Geson-anko <59220704+Geson-anko@users.noreply.github.com>"]
+readme = "README.md"
+license = "MIT"
+classifiers=[
+	"Programming Language :: Python :: 3",
+	"License :: OSI Approved :: MIT License",
+	"Intended Audience :: Developers",
+	"Programming Language :: Python",
+	"Topic :: Software Development :: Libraries :: Python Modules"
+]
 
 [tool.poetry.dependencies]
 python = "^3.9"
