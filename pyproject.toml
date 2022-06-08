@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "JarvisEngine"
-version = "0.0.0"
+version = "0.0.1"
 description = "The AI Engine to make J.A.R.V.I.S."
 repository = "https://github.com/Geson-anko/JarvisEngine"
 authors = ["Geson-anko <59220704+Geson-anko@users.noreply.github.com>"]
