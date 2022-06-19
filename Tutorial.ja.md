@@ -23,7 +23,7 @@ class App(BaseApp):
 ```
 
 - config.json5
-```json
+```json5
 {
     MyApp: {
         path: "app.App",
