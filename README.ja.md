@@ -20,7 +20,7 @@ JarvisEngineは次の4つの目的のうちの3番目を達成するために作
 # インストール
 次のコマンドを実行してインストールします。
 ```sh
-pip install git+https://github.com/Geson-anko/JarvisEngine.git@main
+pip install git+https://github.com/Geson-anko/JarvisEngine.git@master
 ```
 
 ### ソースからインストール
