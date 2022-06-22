@@ -1,7 +1,7 @@
 import argparse
 
 from JarvisEngine import constants
-from JarvisEngine.core import parsers
+from JarvisEngine.core import argument_parsers
 
 
 def _parse_args(parser: argparse.ArgumentParser, argv: list[str]) -> argparse.Namespace:
@@ -9,7 +9,7 @@ def _parse_args(parser: argparse.ArgumentParser, argv: list[str]) -> argparse.Na
 
 
 def test_at_launching():
-    parser = parsers.at_launching()
+    parser = argument_parsers.at_launching()
 
     # test command
     args = _parse_args(parser, ["create"])
@@ -54,7 +54,7 @@ def test_at_launching():
 
 
 def test_at_creating():
-    parser = parsers.at_creating()
+    parser = argument_parsers.at_creating()
 
     argv = "create -d=bbb"
     args = _parse_args(parser, argv.split())
@@ -66,7 +66,7 @@ def test_at_creating():
 
 
 def test_at_running():
-    parser = parsers.at_running()
+    parser = argument_parsers.at_running()
 
     # check default value
     argv = "run"
