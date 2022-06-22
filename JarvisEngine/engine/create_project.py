@@ -1,8 +1,9 @@
 import os
 import shutil
 
-from .constants import DEFAULT_CONFIG_FILE_NAME, ENGINE_PATH
-from .core import argument_parsers, logging_tool
+from ..constants import DEFAULT_CONFIG_FILE_NAME, ENGINE_PATH
+from ..core import logging_tool
+from . import argument_parsers
 
 # The absolute path to the template project
 TEMPLATE_PROJECT_PATH = os.path.join(ENGINE_PATH, "template_project")
