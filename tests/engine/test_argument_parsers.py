@@ -1,7 +1,7 @@
 import argparse
 
 from JarvisEngine import constants
-from JarvisEngine.core import argument_parsers
+from JarvisEngine.engine import argument_parsers
 
 
 def _parse_args(parser: argparse.ArgumentParser, argv: list[str]) -> argparse.Namespace:
