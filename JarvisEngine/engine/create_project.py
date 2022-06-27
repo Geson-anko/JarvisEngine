@@ -3,7 +3,7 @@ import shutil
 
 from ..constants import DEFAULT_CONFIG_FILE_NAME, ENGINE_PATH
 from ..core import logging_tool
-from .argument_parsers import at_creating
+from . import argument_parsers
 
 # The absolute path to the template project
 TEMPLATE_PROJECT_PATH = os.path.join(ENGINE_PATH, "template_project")
@@ -22,7 +22,7 @@ logger = logging_tool.getLogger(logging_tool.MAIN_LOGGER_NAME)
 
 def create():
     """create JE project."""
-    parser = at_creating()
+    parser = argument_parsers.at_creating()
     args = parser.parse_args()
 
     creating_dir = args.creating_dir
