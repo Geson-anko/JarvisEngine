@@ -15,6 +15,15 @@ def test_read_toml():
 
 
 def test_read_json():
+    conf = config_tools.read_json("tests/core/test_config.json")
+    assert conf["name"] == "kazuya"
+    assert conf["age"] == 17
+    assert conf["sex"]["real"] == "male"
+    assert conf["sex"]["virtual"] is None
+    assert conf["student"] is False
+
+
+def test_read_json5():
     conf = config_tools.read_json("tests/core/test_config.json5")
     assert conf["name"] == "geson"
     assert conf["age"] == 18
