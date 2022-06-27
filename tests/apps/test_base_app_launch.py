@@ -13,7 +13,7 @@ from JarvisEngine.apps.base_app import BaseApp
 from JarvisEngine.apps.launcher import Launcher
 from JarvisEngine.constants import SHUTDOWN_NAME
 from JarvisEngine.core.logging_tool import getLoggingServer
-from JarvisEngine.core.value_sharing import FolderDict_withLock
+from JarvisEngine.core.value_sharing import FolderDictWithLock
 from JarvisEngine.engine.run_project import create_shutdown
 
 from .test_base_app import PROJECT_DIR
