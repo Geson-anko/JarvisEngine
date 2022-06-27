@@ -94,7 +94,7 @@ def test_ReadOnlyString():
     assert_modify_string(ros0)
 
 
-def test_make_readonly():
+def test_make_read_only():
 
     v = mp.Value("i")
     a = mp.Array(ctypes.c_uint8, 3)
