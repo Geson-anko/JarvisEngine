@@ -12,14 +12,14 @@ from ..constants import DEFAULT_ENGINE_CONFIG_FILE, SHUTDOWN_NAME
 from ..core import logging_tool
 from ..core.config_tools import deep_update, dict2attr, read_json, read_toml
 from ..core.value_sharing import FolderDict_withLock, make_readonly
-from .argument_parsers import at_running
+from . import argument_parsers
 
 logger = logging_tool.getLogger(logging_tool.MAIN_LOGGER_NAME)
 
 
 def run():
     """runs JE project."""
-    parser = at_running()
+    parser = argument_parsers.at_running()
     args = parser.parse_args()
 
     project_dir = args.project_dir
