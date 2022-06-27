@@ -87,9 +87,9 @@ In addition to the methods listed here, there are several other methods that can
 A function called at last in Application Constructor.
 
 - RegisterProcessSharedValues(self, sync_manager)  
-Please see section for more information [Sharing values between applications](#Sharing values between applications).
+Please see section for more information [Sharing values between applications](#Sharing-values-between-applications).
 - RegisterThreadSharedValues(self)  
-Please see section for more information [Sharing values between applications](#Sharing values between applications).
+Please see section for more information [Sharing values between applications](#Sharing-values-between-applications).
 - Awake(self)  
 A function called immediately after the start of a process or thread. Note that shared values between processes/threads cannot be used after this function is called.
 
@@ -102,7 +102,7 @@ A function called just before the end of the process/thread. Note that this meth
 
 ### Structure description file (`config.json5`)
 This is a **json5 file** that describes the application startup structure. It is described by specifying the module path of the application. It also describes whether to start parallel processing in threads or processes. 
-Running multiple application with the same format at the topmost field of this file or after `apps` is also possible. More information regarding startup will be written at  [Launch multiple applications](#Launch multiple applications)
+Running multiple application with the same format at the topmost field of this file or after `apps` is also possible. More information regarding startup will be written at  [Launch multiple applications](#Launch-multiple-applications)
 
 - Example  
 ```json5
@@ -135,11 +135,11 @@ This is the module path to the application class to start. Write in a form **rea
 In case `true`, The application will use thread (`threading` module) and begin parallel processing. In case `false`, The process(`multiprocessing` module) will use other intepreter instead.    
 <br>
 
-The main reason for using json5 because it can add comments with ease. JSON files with other names can also be read if explicitly specified at startup. Details are explained in section [JarvisEngine startup commands](#JarvisEngine startup commands).
+The main reason for using json5 because it can add comments with ease. JSON files with other names can also be read if explicitly specified at startup. Details are explained in section [JarvisEngine startup commands](#JarvisEngine-startup-commands).
 
 
 ## Launching multiple applications
-[Structure description file (`config.json5`)](#Structure description file-(`config.json5`)) in example of application launch structure have the following tree structure.
+[Structure description file (`config.json5`)](#Structure-description-file-(`config.json5`)) in example of application launch structure have the following tree structure.
 The application on top is `Launcher` application. The application after that will be launch following the tree structure.
 
 ```mermaid
@@ -164,7 +164,7 @@ In the case of a process, the interpreter is completely separated, so performanc
 ### Spawn and Fork
 There are two typical ways to start a process: `spawn` and `fork`. (`fork` is available only on UNIX-like systems.) 
 Please note that JarvisEngine is using `spawn` on default.  
-In later at [Engine Settings](Engine Settings), We will explain how to change the `start_method` of JarvisEngine.
+In later at [Engine Settings](#Engine-Settings), We will explain how to change the `start_method` of JarvisEngine.
 #### **Note**  
 Note that start a Multi-process threads using `fork` are dangerous and may encounter unexpected bugs such as freezing! If you use are using `fork`, please design your application startup configuration carefully.
 ## Sharing values between applications.
@@ -280,7 +280,7 @@ class App(BaseApp):
         self.addThreadSharedValue("personal_data",v)
 ```
 Note: Please don't forget to use super class `RegisterThreadSharedValues` 
-Note: `addThreadSharedValues` can also be called in the `Start` and `Update` methods. As explained in [Override Methods](#About Override Methods).
+Note: `addThreadSharedValues` can also be called in the `Start` and `Update` methods. As explained in [Override Methods](#About-Override-Methods).
 
 
 - Reference  
