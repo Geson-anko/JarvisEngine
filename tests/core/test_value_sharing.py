@@ -6,4 +6,5 @@ def test_import():
         ReadOnlyError,
         ReadOnlyString,
         ReadOnlyValue,
+        make_read_only,
     )

@@ -11,7 +11,7 @@ from ..apps import Launcher
 from ..constants import DEFAULT_ENGINE_CONFIG_FILE, SHUTDOWN_NAME
 from ..core import logging_tool
 from ..core.config_tools import deep_update, dict2attr, read_json, read_toml
-from ..core.value_sharing import FolderDictWithLock, make_readonly
+from ..core.value_sharing import FolderDictWithLock, make_read_only
 from . import argument_parsers
 
 logger = logging_tool.getLogger(logging_tool.MAIN_LOGGER_NAME)
@@ -81,7 +81,7 @@ def create_shutdown(process_shared_values: FolderDictWithLock) -> Synchronized:
     Returns pure shutdown value (writable).
     """
     shutdown = mp.Value(ctypes.c_bool, False)
-    shutdown_read_only = make_readonly(shutdown)
+    shutdown_read_only = make_read_only(shutdown)
     process_shared_values[SHUTDOWN_NAME] = shutdown_read_only
     return shutdown
 
