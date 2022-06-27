@@ -3,7 +3,7 @@ import threading
 from JarvisEngine.core.value_sharing import folder_dict_with_lock
 
 
-def test_FolderDict_withLock():
+def test_FolderDictWithLock():
     fdwl = folder_dict_with_lock.FolderDictWithLock(sep=".")
     rlock_type = type(threading.RLock())
     assert isinstance(fdwl._lock, rlock_type)
