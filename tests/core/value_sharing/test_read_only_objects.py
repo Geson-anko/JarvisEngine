@@ -100,16 +100,16 @@ def test_make_readonly():
     a = mp.Array(ctypes.c_uint8, 3)
     s = mp.Array(ctypes.c_char, 10)
 
-    rov = value_sharing.make_readonly(v)
-    roa = value_sharing.make_readonly(a)
-    ros = value_sharing.make_readonly(s)
+    rov = value_sharing.make_read_only(v)
+    roa = value_sharing.make_read_only(a)
+    ros = value_sharing.make_read_only(s)
 
     assert isinstance(rov, ReadOnlyValue)
     assert isinstance(roa, ReadOnlyArray)
     assert isinstance(ros, ReadOnlyString)
 
     try:
-        value_sharing.make_readonly(None)
+        value_sharing.make_read_only(None)
         raise AssertionError
     except ValueError:
         pass
