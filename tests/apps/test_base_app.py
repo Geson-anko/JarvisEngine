@@ -10,7 +10,7 @@ from JarvisEngine.core import logging_tool
 
 # prepare
 from JarvisEngine.core.config_tools import dict2attr, read_json, read_toml
-from JarvisEngine.core.value_sharing import FolderDict_withLock
+from JarvisEngine.core.value_sharing import FolderDictWithLock
 
 PROJECT_DIR = "TestEngineProject"
 sys.path.insert(0, os.path.join(os.getcwd(), PROJECT_DIR))
@@ -144,7 +144,7 @@ def test_process_shared_values():
     assert App0.process_shared_values is None
     assert App1.process_shared_values is None
 
-    fdwl = FolderDict_withLock(sep=".")
+    fdwl = FolderDictWithLock(sep=".")
 
     MainApp.process_shared_values = fdwl
     assert MainApp.process_shared_values is fdwl
@@ -165,7 +165,7 @@ def test_set_process_shared_values_to_all_apps():
     app_dir = PROJECT_DIR
     MainApp = base_app.BaseApp(name, config, engine_config, project_config, app_dir)
 
-    fdwl = FolderDict_withLock(sep=".")
+    fdwl = FolderDictWithLock(sep=".")
     MainApp.set_process_shared_values_to_all_apps(fdwl)
     assert MainApp.process_shared_values is fdwl
     App0 = MainApp.child_apps["App0"]
@@ -188,7 +188,7 @@ def test_thread_shared_values():
 
     # Initial values is None
     assert MainApp.thread_shared_values is None
-    fdwl = FolderDict_withLock(sep=".")
+    fdwl = FolderDictWithLock(sep=".")
     MainApp.thread_shared_values = fdwl
     assert MainApp.thread_shared_values is fdwl
 
@@ -200,7 +200,7 @@ def test_set_thread_shared_values_to_all_apps():
     app_dir = PROJECT_DIR
     MainApp = base_app.BaseApp(name, config, engine_config, project_config, app_dir)
 
-    fdwl = FolderDict_withLock(sep=".")
+    fdwl = FolderDictWithLock(sep=".")
     MainApp.set_thread_shared_values_to_all_apps(fdwl)
     assert MainApp.thread_shared_values is fdwl
     App0 = MainApp.child_thread_apps["App0"]
@@ -225,8 +225,8 @@ def test__add_shared_value():
     app_dir = PROJECT_DIR
     MainApp = base_app.BaseApp(name, config, engine_config, project_config, app_dir)
 
-    fdwl_thread = FolderDict_withLock(sep=".")
-    fdwl_process = FolderDict_withLock(sep=".")
+    fdwl_thread = FolderDictWithLock(sep=".")
+    fdwl_process = FolderDictWithLock(sep=".")
     MainApp.set_process_shared_values_to_all_apps(fdwl_process)
     MainApp.set_thread_shared_values_to_all_apps(fdwl_thread)
 
@@ -247,7 +247,7 @@ def test_addProcessSharedValue():
     config = project_config.Launcher
     app_dir = PROJECT_DIR
     MainApp = base_app.BaseApp(name, config, engine_config, project_config, app_dir)
-    fdwl = FolderDict_withLock(sep=".")
+    fdwl = FolderDictWithLock(sep=".")
     MainApp.process_shared_values = fdwl
 
     MainApp.addProcessSharedValue("ccc", 30)
@@ -264,7 +264,7 @@ def test_addThreadSharedValue():
     config = project_config.Launcher
     app_dir = PROJECT_DIR
     MainApp = base_app.BaseApp(name, config, engine_config, project_config, app_dir)
-    fdwl = FolderDict_withLock(sep=".")
+    fdwl = FolderDictWithLock(sep=".")
 
     MainApp.thread_shared_values = fdwl
 
@@ -283,8 +283,8 @@ def test__get_shared_value():
     app_dir = PROJECT_DIR
     MainApp = base_app.BaseApp(name, config, engine_config, project_config, app_dir)
 
-    fdwl_thread = FolderDict_withLock(sep=".")
-    fdwl_process = FolderDict_withLock(sep=".")
+    fdwl_thread = FolderDictWithLock(sep=".")
+    fdwl_process = FolderDictWithLock(sep=".")
     MainApp.set_process_shared_values_to_all_apps(fdwl_process)
     MainApp.set_thread_shared_values_to_all_apps(fdwl_thread)
 
@@ -317,7 +317,7 @@ def test_getProcessSharedValue():
     config = project_config.Launcher
     app_dir = PROJECT_DIR
     MainApp = base_app.BaseApp(name, config, engine_config, project_config, app_dir)
-    fdwl_process = FolderDict_withLock(sep=".")
+    fdwl_process = FolderDictWithLock(sep=".")
     MainApp.set_process_shared_values_to_all_apps(fdwl_process)
     App0 = MainApp.child_apps["App0"]
     App1 = MainApp.child_apps["App1"]
@@ -342,7 +342,7 @@ def test_getThreadSharedValue():
     config = project_config.Launcher
     app_dir = PROJECT_DIR
     MainApp = base_app.BaseApp(name, config, engine_config, project_config, app_dir)
-    fdwl_thread = FolderDict_withLock(sep=".")
+    fdwl_thread = FolderDictWithLock(sep=".")
     MainApp.set_thread_shared_values_to_all_apps(fdwl_thread)
 
     App0 = MainApp.child_apps["App0"]
@@ -364,7 +364,7 @@ def test_prepare_for_launching_thread_apps():
     MainApp.prepare_for_launching_thread_apps()
 
     t_sv = MainApp.thread_shared_values
-    assert isinstance(t_sv, FolderDict_withLock)
+    assert isinstance(t_sv, FolderDictWithLock)
     assert t_sv["Launcher.App0.set_obj"] == {"number"}
     assert t_sv["Launcher.App1.range_obj"] is None
 

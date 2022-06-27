@@ -3,9 +3,9 @@ import shutil
 import sys
 from logging import INFO
 
-from JarvisEngine import create_project
 from JarvisEngine.constants import DEFAULT_CONFIG_FILE_NAME
-from JarvisEngine.create_project import (
+from JarvisEngine.engine import create_project
+from JarvisEngine.engine.create_project import (
     TEMPLATE_APP_FILE_NAME,
     TEMPLATE_APP_FILE_PATH,
     TEMPLATE_CONFIG_FILE_PATH,

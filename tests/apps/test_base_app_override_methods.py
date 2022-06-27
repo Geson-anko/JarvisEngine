@@ -10,7 +10,7 @@ from attr_dict import AttrDict
 
 from JarvisEngine.apps import base_app
 from JarvisEngine.core.logging_tool import getLoggingServer
-from JarvisEngine.core.value_sharing import FolderDict_withLock
+from JarvisEngine.core.value_sharing import FolderDictWithLock
 
 from .test_base_app import PROJECT_DIR
 from .test_base_app import engine_config as src_ec
@@ -50,7 +50,7 @@ def test_RegisterProcessSharedValues():
     app_dir = PROJECT_DIR
     with mp.Manager() as shmm, cd_project_dir():
         MainApp = base_app.BaseApp(name, config, engine_config, project_config, app_dir)
-        fdwl = FolderDict_withLock(sep=".")
+        fdwl = FolderDictWithLock(sep=".")
         MainApp.set_process_shared_values_to_all_apps(fdwl)
         MainApp.RegisterProcessSharedValues(shmm)
 
@@ -66,7 +66,7 @@ def test_RegisterThreadSharedValues():
     app_dir = PROJECT_DIR
     with cd_project_dir():
         MainApp = base_app.BaseApp(name, config, engine_config, project_config, app_dir)
-        fdwl = FolderDict_withLock(sep=".")
+        fdwl = FolderDictWithLock(sep=".")
         MainApp.set_thread_shared_values_to_all_apps(fdwl)
         MainApp.RegisterThreadSharedValues()
 
@@ -75,7 +75,7 @@ def test_RegisterThreadSharedValues():
         assert fdwl["Launcher.App1.App1_1.tuple_obj"] is None
         assert fdwl["Launcher.App1.App1_2.list_obj"] is None
 
-        fdwl = FolderDict_withLock(sep=".")
+        fdwl = FolderDictWithLock(sep=".")
         App1 = MainApp.child_apps["App1"]
         App1.set_thread_shared_values_to_all_apps(fdwl)
         App1.RegisterThreadSharedValues()

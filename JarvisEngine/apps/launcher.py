@@ -5,7 +5,7 @@ from multiprocessing.managers import SyncManager
 from typing import *
 
 from ..core import name as name_tools
-from ..core.value_sharing import FolderDict_withLock
+from ..core.value_sharing import FolderDictWithLock
 from .base_app import AttrDict, BaseApp
 
 LAUNCHER_NAME = "Launcher"
@@ -42,18 +42,18 @@ class Launcher(BaseApp):
         config = project_config[name]
         super().__init__(name, config, engine_config, project_config, project_dir)
 
-    def prepare_for_launching(self, sync_manager: SyncManager) -> FolderDict_withLock:
+    def prepare_for_launching(self, sync_manager: SyncManager) -> FolderDictWithLock:
         """Prepare for launching.
         Returns Process Shared Values after registering shared values,
         and set None to Process Shared Values.
         """
-        p_sv = FolderDict_withLock(sep=name_tools.SEP, lock=mp.RLock())
+        p_sv = FolderDictWithLock(sep=name_tools.SEP, lock=mp.RLock())
         self.set_process_shared_values_to_all_apps(p_sv)
         self.RegisterProcessSharedValues(sync_manager)
         self.set_process_shared_values_to_all_apps(None)
         return p_sv
 
-    def launch(self, process_shared_values: FolderDict_withLock) -> None:
+    def launch(self, process_shared_values: FolderDictWithLock) -> None:
         """Launches all application processes/threads in background."""
         self.launcher_thread = threading.Thread(target=super().launch, name=self.name, args=(process_shared_values,))
         self.launcher_thread.start()
