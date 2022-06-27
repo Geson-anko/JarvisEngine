@@ -118,7 +118,7 @@ def make_readonly(
         )
 
 
-class FolderDict_withLock(FolderDict):
+class FolderDictWithLock(FolderDict):
     """
     Protects FolderDict with Lock to prevent multiple threads
     from reading and writing at the same time

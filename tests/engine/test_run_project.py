@@ -2,12 +2,12 @@ from multiprocessing.sharedctypes import Synchronized
 
 # prepare
 from JarvisEngine.constants import SHUTDOWN_NAME
-from JarvisEngine.core.value_sharing import FolderDict_withLock, ReadOnlyValue
+from JarvisEngine.core.value_sharing import FolderDictWithLock, ReadOnlyValue
 from JarvisEngine.engine.run_project import create_shutdown
 
 
 def test_create_shutdown():
-    fdwl = FolderDict_withLock()
+    fdwl = FolderDictWithLock()
     shutdown = create_shutdown(fdwl)
     shutdown_readonly = fdwl[SHUTDOWN_NAME]
 

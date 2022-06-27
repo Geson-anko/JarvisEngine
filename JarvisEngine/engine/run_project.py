@@ -11,7 +11,7 @@ from ..apps import Launcher
 from ..constants import DEFAULT_ENGINE_CONFIG_FILE, SHUTDOWN_NAME
 from ..core import logging_tool
 from ..core.config_tools import deep_update, dict2attr, read_json, read_toml
-from ..core.value_sharing import FolderDict_withLock, make_readonly
+from ..core.value_sharing import FolderDictWithLock, make_readonly
 from . import argument_parsers
 
 logger = logging_tool.getLogger(logging_tool.MAIN_LOGGER_NAME)
@@ -74,7 +74,7 @@ def main_process(config: AttrDict, engine_config: AttrDict, project_dir: str) ->
         launcher.join()
 
 
-def create_shutdown(process_shared_values: FolderDict_withLock) -> Synchronized:
+def create_shutdown(process_shared_values: FolderDictWithLock) -> Synchronized:
     """
     Creates a shutdown value and share it inter all app processes.
     The shared shutdown value is readonly.

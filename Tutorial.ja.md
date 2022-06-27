@@ -183,7 +183,7 @@ graph TD
     A1 --"process"-->A1_2
 ```
 ### FolderDict (with Lock)
-全ての共有されたオブジェクトは`FolderDict_withLock`というクラスによって管理されます。[FolderDictの詳細仕様はFolderDictのリポジトリをご覧ください。](https://github.com/Geson-anko/folder_dict)  
+全ての共有されたオブジェクトは`FolderDictWithLock`というクラスによって管理されます。[FolderDictの詳細仕様はFolderDictのリポジトリをご覧ください。](https://github.com/Geson-anko/folder_dict)  
 *パス*によってオブジェクトを登録することができます。JarvisEngineでセパレータは常にドット`.`です。変更することはできません。
 - Example
 ```py

@@ -15,7 +15,7 @@ from attr_dict import AttrDict
 from ..constants import SHUTDOWN_NAME
 from ..core import logging_tool
 from ..core import name as name_tools
-from ..core.value_sharing import FolderDict_withLock
+from ..core.value_sharing import FolderDictWithLock
 
 
 class BaseApp(object):
@@ -76,10 +76,10 @@ class BaseApp(object):
         - frame_rate < 0.0
             Call next `Update` immediately.
 
-    - process_shared_values: FolderDict_withLock | None
+    - process_shared_values: FolderDictWithLock | None
         The property. Hold shard values inter `processes`.
 
-    - thread_shared_values: FolderDict_withLock | None
+    - thread_shared_values: FolderDictWithLock | None
         The property. Hold shared values inter `threads`.
 
     Override methods:
@@ -129,7 +129,7 @@ class BaseApp(object):
         3. Init (override method)
 
     2. prepare_for_launching (only Launcher application.)
-        1. set_process_shared_values_to_all_apps (set FolderDict_withLock)
+        1. set_process_shared_values_to_all_apps (set FolderDictWithLock)
         2. RegisterProcessSharedValues (override method)
             1. addProcessSharedValue
             2. RegisterProcessSharedValues (child applications)
@@ -141,7 +141,7 @@ class BaseApp(object):
         2. setter of process_shared_value
         3. prepare_for_launching_thread_apps
             If process app
-                1. set_thread_shared_values_to_all_apps(FolderDict_withLock)
+                1. set_thread_shared_values_to_all_apps(FolderDictWithLock)
                 2. RegisterThreadSharedValues (override method)
                     1. RegisterThreadSharedValues (child thread apps)
                         ...
@@ -287,18 +287,18 @@ class BaseApp(object):
         else:
             raise ImportError(f"{path} is not a subclass of BaseApp!")
 
-    __process_shared_values: FolderDict_withLock = None
-    __thread_shared_values: FolderDict_withLock = None
+    __process_shared_values: FolderDictWithLock = None
+    __thread_shared_values: FolderDictWithLock = None
 
     @property
-    def process_shared_values(self) -> FolderDict_withLock | None:
+    def process_shared_values(self) -> FolderDictWithLock | None:
         return self.__process_shared_values
 
     @process_shared_values.setter
-    def process_shared_values(self, p_sv: FolderDict_withLock) -> None:
+    def process_shared_values(self, p_sv: FolderDictWithLock) -> None:
         self.__process_shared_values = p_sv
 
-    def set_process_shared_values_to_all_apps(self, p_sv: FolderDict_withLock) -> None:
+    def set_process_shared_values_to_all_apps(self, p_sv: FolderDictWithLock) -> None:
         """
         Set process shared value to `self` and `child_apps`
         Do not call if application process was started.
@@ -308,15 +308,15 @@ class BaseApp(object):
             app.set_process_shared_values_to_all_apps(p_sv)
 
     @property
-    def thread_shared_values(self) -> FolderDict_withLock | None:
+    def thread_shared_values(self) -> FolderDictWithLock | None:
         return self.__thread_shared_values
 
     @thread_shared_values.setter
-    def thread_shared_values(self, t_sv: FolderDict_withLock) -> None:
+    def thread_shared_values(self, t_sv: FolderDictWithLock) -> None:
         """If called before process start, it will raise Error in the future."""
         self.__thread_shared_values = t_sv
 
-    def set_thread_shared_values_to_all_apps(self, t_sv: FolderDict_withLock) -> None:
+    def set_thread_shared_values_to_all_apps(self, t_sv: FolderDictWithLock) -> None:
         """
         Set to `self` and `child_thread_apps`.
         You must call after the app process was started.
@@ -421,7 +421,7 @@ class BaseApp(object):
         Set thread shared values among self and child thread apps.
         """
         if not self.is_thread:  # Only *head* of threads.
-            t_sv = FolderDict_withLock(sep=name_tools.SEP)
+            t_sv = FolderDictWithLock(sep=name_tools.SEP)
             self.set_thread_shared_values_to_all_apps(t_sv)
             self.RegisterThreadSharedValues()
 
@@ -457,7 +457,7 @@ class BaseApp(object):
         for process in self.processes:
             process.join()
 
-    def _launch(self, process_shared_values: FolderDict_withLock) -> None:
+    def _launch(self, process_shared_values: FolderDictWithLock) -> None:
         """
         Launch all applications as other threads or processes.
         """
@@ -479,7 +479,7 @@ class BaseApp(object):
         self.Terminate()
         self.logger.debug("terminate")
 
-    def launch(self, process_shared_values: FolderDict_withLock) -> None:
+    def launch(self, process_shared_values: FolderDictWithLock) -> None:
         """
         Wrapps `self._launch` by try-except error catching.
         """
