@@ -96,7 +96,7 @@ class ReadOnlyString(ReadOnlyArray):
         raise ReadOnlyError
 
 
-def make_readonly(
+def make_read_only(
     value: Union[Synchronized, SynchronizedArray, SynchronizedString]
 ) -> Union[ReadOnlyValue, ReadOnlyArray, ReadOnlyString]:
     """Make synchronized objects readonly."""
