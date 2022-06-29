@@ -41,7 +41,7 @@ JarvisEngineのインストールが完了しましたね！早速動かして�
     ```
     MyProject
     ├── app.py
-    └── config.json5
+    └── config.json
     ```
 
 2. JarvisEngineを起動する  
