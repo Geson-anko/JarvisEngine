@@ -18,7 +18,7 @@ def test_DEFAULT_CONFIG_FILE():
 
 
 def test_DEFAULT_CONFIG_FILE_NAME():
-    assert constants.DEFAULT_CONFIG_FILE_NAME == "config.json5"
+    assert constants.DEFAULT_CONFIG_FILE_NAME == "config.json"
 
 
 def test_SHUTDOWN_NAME():
