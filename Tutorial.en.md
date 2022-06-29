@@ -7,7 +7,7 @@ The project structure should look like this.
 ```
 MyProject
 ├── app.py
-└── config.json5
+└── config.json
 ```
 - app.py
 ```py
@@ -23,13 +23,13 @@ class App(BaseApp):
         self.logger.info(f"Updating in {delta_time:.2f} secs.")
 ```
 
-- config.json5
-```json5
+- config.json
+```json
 {
-    MyApp: {
-        path: "app.App",
-        thread: true,
-        apps:{}
+    "MyApp": {
+        "path": "app.App",
+        "thread": true,
+        "apps":{}
     }
 }
 ```
@@ -100,30 +100,30 @@ A function called at the end of the process/thread.
 A function called just before the end of the process/thread. Note that this method will not be called if the child application is not terminated.
 
 
-### Structure description file (`config.json5`)
-This is a **json5 file** that describes the application startup structure. It is described by specifying the module path of the application. It also describes whether to start parallel processing in threads or processes. 
+### Structure description file (`config.json`)
+This is a **json file** that describes the application startup structure. It is described by specifying the module path of the application. It also describes whether to start parallel processing in threads or processes. 
 Running multiple application with the same format at the topmost field of this file or after `apps` is also possible. More information regarding startup will be written at  [Launch multiple applications](#Launch-multiple-applications)
 
 - Example  
-```json5
+```json
 {
-    App0: {
-        path: "App0.app.App0",
-        thread: true,
+    "App0": {
+        "path": "App0.app.App0",
+        "thread": true
         // `apps` is not necessary.
     },
-    App1: {
-        path: "App1.app.App1",
-        thread: false,
-        apps: {
-            App1_1: {
-                path: "App1.App1_1.app.App1_1",
-                thread: true,
-                apps: {}
+    "App1": {
+        "path": "App1.app.App1",
+        "thread": false,
+        "apps": {
+            "App1_1": {
+                "path": "App1.App1_1.app.App1_1",
+                "thread": true,
+                "apps": {}
             },
-            App1_2: {
-                path: "App1.App1_2.app.App1_2",
-                thread: false,
+            "App1_2": {
+                "path": "App1.App1_2.app.App1_2",
+                "thread": false
             }
         }
     }
@@ -135,11 +135,11 @@ This is the module path to the application class to start. Write in a form **rea
 In case `true`, The application will use thread (`threading` module) and begin parallel processing. In case `false`, The process(`multiprocessing` module) will use other intepreter instead.    
 <br>
 
-The main reason for using json5 because it can add comments with ease. JSON files with other names can also be read if explicitly specified at startup. Details are explained in section [JarvisEngine startup commands](#JarvisEngine-startup-commands).
+The main reason for using json because it can add comments with ease. JSON files with other names can also be read if explicitly specified at startup. Details are explained in section [JarvisEngine startup commands](#JarvisEngine-startup-commands).
 
 
 ## Launching multiple applications
-[Structure description file (`config.json5`)](#Structure-description-file-(`config.json5`)) in example of application launch structure have the following tree structure.
+[Structure description file (`config.json`)](#Structure-description-file-(`config.json`)) in example of application launch structure have the following tree structure.
 The application on top is `Launcher` application. The application after that will be launch following the tree structure.
 
 ```mermaid
@@ -356,7 +356,7 @@ Arguments
 The directory of project you want to run. Default value is `. /``.   
 
 - `-c`, `--config_file`  
-Path of the startup configuration file of the application. The default value is `config.json5`.
+Path of the startup configuration file of the application. The default value is `config.json`.
 
 - `-ec`, `--engine_config_file`  
 The engine configuration file, The default is `JarvisEngine/default_engine_config.toml`.
