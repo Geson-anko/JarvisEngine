@@ -41,7 +41,7 @@ After installation, Let's try execute JarvisEngine.
     ```
     MyProject
     ├── app.py
-    └── config.json5
+    └── config.json
     ```
 
 2. Execute JarvisEngine

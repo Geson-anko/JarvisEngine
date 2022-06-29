@@ -43,13 +43,13 @@ class BaseApp(object):
         The logger for multiprocessing logging.
 
     - config: AttrDict
-        `config.json5` of under the application.
+        `config.json` of under the application.
 
     - engine_config: AttrDict
         AttrDict of `engine_config.toml`
 
     - project_config: AttrDict
-        Full of `config.json5`
+        Full of `config.json`
 
     - app_dir: str | None
         The directory to the application.
