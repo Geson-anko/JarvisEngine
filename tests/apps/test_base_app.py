@@ -14,7 +14,7 @@ from JarvisEngine.core.value_sharing import FolderDictWithLock
 
 PROJECT_DIR = "TestEngineProject"
 sys.path.insert(0, os.path.join(os.getcwd(), PROJECT_DIR))
-TEST_CONFIG_FILE_PATH = os.path.join(PROJECT_DIR, "config.json5")
+TEST_CONFIG_FILE_PATH = os.path.join(PROJECT_DIR, "config.json")
 
 project_config = dict2attr(read_json(TEST_CONFIG_FILE_PATH))
 project_config = to_project_config(project_config)
