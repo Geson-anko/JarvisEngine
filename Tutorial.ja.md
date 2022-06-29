@@ -6,7 +6,7 @@
 ```
 MyProject
 ├── app.py
-└── config.json5
+└── config.json
 ```
 - app.py
 ```py
@@ -22,8 +22,8 @@ class App(BaseApp):
         self.logger.info(f"Updating in {delta_time:.2f} secs.")
 ```
 
-- config.json5
-```json5
+- config.json
+```json
 {
     MyApp: {
         path: "app.App",
@@ -96,30 +96,30 @@ frame_rateの数だけ一秒間にUpdateが呼び出されます。引数の`del
 プロセス/スレッドの終了直前に呼ばれます。子アプリケーションが終了しない場合、このメソッドは呼び出されないので注意してください。
 
 
-### 構造記述ファイル (`config.json5`)
-アプリケーションを起動構造を記述する**json5ファイル**です。任意の名前に対し、アプリケーションのモジュールパスを指定することで記述します。また、スレッドまたはプロセスのどちらで並列処理を開始するかも記述します。  
+### 構造記述ファイル (`config.json`)
+アプリケーションを起動構造を記述する**jsonファイル**です。任意の名前に対し、アプリケーションのモジュールパスを指定することで記述します。また、スレッドまたはプロセスのどちらで並列処理を開始するかも記述します。  
 このファイルの最上位のフィールドや、`apps`以降に同じ形式で記述することにより複数のアプリケーションを起動することができます。起動について詳しくはセクション [複数のアプリケーションを起動する](#複数のアプリケーションを起動する) の中で説明します。
 
 - 例  
-```json5
+```json
 {
-    App0: {
-        path: "App0.app.App0",
-        thread: true,
-        // `apps`　is not necessary.
+    "App0": {
+        "path": "App0.app.App0",
+        "thread": true
+        // `apps` is not necessary.
     },
-    App1: {
-        path: "App1.app.App1",
-        thread: false,
-        apps: {
-            App1_1: {
-                path: "App1.App1_1.app.App1_1",
-                thread: true,
-                apps: {}
+    "App1": {
+        "path": "App1.app.App1",
+        "thread": false,
+        "apps": {
+            "App1_1": {
+                "path": "App1.App1_1.app.App1_1",
+                "thread": true,
+                "apps": {}
             },
-            App1_2: {
-                path: "App1.App1_2.app.App1_2",
-                thread: false,
+            "App1_2": {
+                "path": "App1.App1_2.app.App1_2",
+                "thread": false
             }
         }
     }
@@ -131,11 +131,11 @@ frame_rateの数だけ一秒間にUpdateが呼び出されます。引数の`del
 `true`の場合、そのアプリケーションはスレッド(`threading`モジュール)を用いて並列処理を行います。`false`の場合はプロセス(`multiprocessing`モジュール)を用いて別のインタプリタで実行されます。   
 <br>
 
-json5を使用している主な理由はコメントの追加と書きやすさのためです。起動時に明示的に指定すれば、別の名前のJSONファイルでも読み込み可能です。詳しくはセクション [JarvisEngineの起動コマンド](#JarvisEngineの起動コマンド) で説明します。
+jsonを使用している主な理由はコメントの追加と書きやすさのためです。起動時に明示的に指定すれば、別の名前のJSONファイルでも読み込み可能です。詳しくはセクション [JarvisEngineの起動コマンド](#JarvisEngineの起動コマンド) で説明します。
 
 
 ## 複数のアプリケーションを起動する
-上記の[構造記述ファイル (`config.json5`)](#構造記述ファイル-(`config.json5`))
+上記の[構造記述ファイル (`config.json`)](#構造記述ファイル-(`config.json`))
 で記した例のアプリケーションの起動構造は、次のような木構造になります。最上位には`Launcher`アプリケーションがあり、そこから木構造のようにアプリケーションが起動していきます。
 
 ```mermaid
@@ -349,7 +349,7 @@ python -m JarvisEngine run --args
 プロジェクトディレクトリです。デフォルト値は`./`です。  
 
 - `-c`, `--config_file`  
-アプリケーションの起動構成を記述したファイルのパスです。デフォルトは`config.json5`です。  
+アプリケーションの起動構成を記述したファイルのパスです。デフォルトは`config.json`です。  
 
 - `-ec`, `--engine_config_file`  
 エンジンの設定を記述したファイルです。デフォルトは`JarvisEngine/default_engine_config.toml`が指定されています。
