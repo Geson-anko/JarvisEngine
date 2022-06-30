@@ -2,7 +2,7 @@
 A brief description for JarvisEngine
 
 ## Project Structure
-Let's take a look inside the project created by `python -m JarvisEngine create -d MyProject` earlier in `Readme.ja.md` 
+Let's take a look inside the project created by `python -m JarvisEngine create -d MyProject` earlier in `README.md` 
 The project structure should look like this.
 ```
 MyProject
