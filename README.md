@@ -1,55 +1,55 @@
 # Jarvis Engine
-複雑な並列処理を伴うAIアプリケーションのためのAIエンジン
+Complex parallel process AI engine for AI application.
 
-### 目的
-JarvisEngineは次の4つの目的のうちの3番目を達成するために作られました。
-1. AIモデルの作成、学習、評価の流れを効率化する。
-2. AIが中心となるアプリケーションの作成、デバッグ、リリースを効率化する
-3. 複雑な並列処理を伴うAIアプリケーションの作成
-4. サーバー上へのデプロイ、ゲームエンジンなどとの連携
+### Purpose
+JarvisEngine is created to achieve 3rd goal out of 4 goals.
+1. To improve AI model creation, training, and evaluation flow. 
+2. To improve AI-centric application creation, debugging, and releasing.
+3. To create AI Application with Complex parallel process.
+4. To connect to Servers, and Game Engines.
 
-# プラットフォーム
+# Platform
 - OS
     - Linux
     - WSL
     - macOS 
-    - Windows (非推奨)
+    - Windows (deprecated)
 
 - Python
-    - 3.9以上
-# インストール
-次のコマンドを実行してインストールします。
+    - 3.9 or above
+# Install
+Install by running the following command.
 ```sh
 pip install git+https://github.com/Geson-anko/JarvisEngine.git@master
 ```
 
-### ソースからインストール
-ソースからインストールする場合はこのリポジトリをクローンし、JarvisEngineのプロジェクト内で次のコマンドを実行してください。
+### Install from Source
+If you are installing from source, clone this repository and run the following command inside Jarvis Engine project:
 ```sh
 pip install -e .
 ```
 
-# さあ始めよう！
-JarvisEngineのインストールが完了しましたね！早速動かしてみましょう。  
+# Let's begin!
+After installation, Let's try execute JarvisEngine.
 
-1. プロジェクトの作成
-    次のコマンドでテンプレートプロジェクトを作成することができます。
+1. Create a project
+    Create a template project with the following command:
     ```sh
     python -m JarvisEngine create -d MyProject
     ```
-    次のようなファイルができます。
+    The following files will be created.
     ```
     MyProject
     ├── app.py
     └── config.json
     ```
 
-2. JarvisEngineを起動する  
-    次のコマンドでJarvisEngineを起動し、先ほど作成したプロジェクトを実行します。  
+2. Execute JarvisEngine
+    Execute JarvisEngine with the following command, and run the project you created.
     ```sh
     python -m JarvisEngine run -d MyProject
     ```
-    - コンソールアウトプット
+    - Console output
     ```
     2022/06/02 10:30:13.278 logging_server.server [INFO]: About starting Logging Server...
     2022/06/02 10:30:13.279 MAIN [INFO]: JarvisEngine launch.
@@ -64,8 +64,8 @@ JarvisEngineのインストールが完了しましたね！早速動かして�
     ...
     ```
 
-    `Enter`キーを押して終了します。
-    - コンソールアウトプット
+    Press the `Enter` key to exit.
+    - Console output
     ```
     ...
     2022/06/02 10:30:13.960 Launcher.MyApp [INFO]: Updating in 0.10 fps.
@@ -75,9 +75,8 @@ JarvisEngineのインストールが完了しましたね！早速動かして�
     2022/06/02 10:30:14.075 MAIN [INFO]: JarvisEngine shutdown.
     ```
 
-# 次のステップ
-JarvisEngineを動作させることができましたか？  
-つぎはチュートリアルです。`Tutorial.ja.md`を開きましょう。
-
+# Next step
+Did you get the Jarvis Engine working?
+Next is the tutorial. Let's open `Tutorial.md`.
 
 
