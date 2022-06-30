@@ -1,0 +1,9 @@
+{
+    "name": "kazuya",
+    "age": 17,
+    "sex": {
+        "real": "male",
+        "virtual": null
+    },
+    "student": false
+}

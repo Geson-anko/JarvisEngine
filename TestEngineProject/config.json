@@ -1,0 +1,21 @@
+{
+    "App0": {
+        "path": "App0.app.App0",
+        "thread": true
+    },
+    "App1": {
+        "path": "App1.app.App1",
+        "thread": false,
+        "apps": {
+            "App1_1": {
+                "path": "App1.App1_1.app.App1_1",
+                "thread": true,
+                "apps": {}
+            },
+            "App1_2": {
+                "path": "App1.App1_2.app.App1_2",
+                "thread": false
+            }
+        }
+    }
+}
