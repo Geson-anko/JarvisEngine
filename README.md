@@ -1,5 +1,5 @@
 # Jarvis Engine
-Complex parallel process AI engine for AI application.
+The AI Engine for complex parallel process AI applications.
 
 ### Purpose
 JarvisEngine is created to achieve 3rd goal out of 4 goals.
