@@ -1,4 +1,0 @@
-[logging]
-host = "127.0.0.1"
-port = 10000
-message_format = "%(name)s [%(levelname)s]: %(message)s"
