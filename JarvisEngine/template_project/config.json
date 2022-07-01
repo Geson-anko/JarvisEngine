@@ -1,7 +1,0 @@
-{
-    "MyApp": {
-        "path": "app.App",
-        "thread": true,
-        "apps":{}
-    }
-}
