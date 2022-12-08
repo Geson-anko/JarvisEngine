@@ -14,6 +14,10 @@ classifiers=[
 	"Topic :: Software Development :: Libraries :: Python Modules"
 ]
 
+packages = [
+	{include = "JarvisEngine"}
+]
+
 [tool.poetry.dependencies]
 python = "^3.9"
 logging-server = {git = "https://github.com/Geson-anko/logging_server", rev = "main"}
